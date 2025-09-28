@@ -21,6 +21,8 @@ interface StepManagerProps {
   setVideoDuration: (duration: number) => void;
   playbackSpeed?: number;
   setPlaybackSpeed?: (speed: number) => void;
+  voiceType?: string;
+  setVoiceType?: (type: string) => void;
   baseScript: string;
   setBaseScript: (script: string) => void;
   
@@ -73,6 +75,8 @@ const StepManager: React.FC<StepManagerProps> = ({
   setVideoDuration,
   playbackSpeed = 1.0,
   setPlaybackSpeed = () => {},
+  voiceType = 'female',
+  setVoiceType = () => {},
   baseScript,
   setBaseScript,
   selectedTemplate,
@@ -98,6 +102,10 @@ const StepManager: React.FC<StepManagerProps> = ({
   const [generatedVideos, setGeneratedVideos] = useState<any[]>([]);
   const [generationProgress, setGenerationProgress] = useState(0);
   const [isGenerating, setIsGenerating] = useState(false);
+  
+  // 添加模板参数状态
+  const [templateParams, setTemplateParams] = useState<any>({});
+  
   const [currentTask, setCurrentTask] = useState<any>(null);
   const [pollingInterval, setPollingInterval] = useState<NodeJS.Timeout | null>(null);
   const [previewVisible, setPreviewVisible] = useState(false);
@@ -207,12 +215,14 @@ const StepManager: React.FC<StepManagerProps> = ({
         duration: videoDuration.toString(), // 后端期望字符串类型
         playbackSpeed: playbackSpeed.toString(), // 倍速
         videoCount: generateCount,
-        voice: 'default' as const,
+        voice: voiceType || 'female', // 使用传递的voiceType参数
         // style: styleConfig,
         style: style
       };
       
-      const savedProject = await saveProject(project);
+      console.log('🎙️ StepManager生成项目配置:', { voiceType, voice: voiceType || 'female' });
+      
+      const savedProject = await saveProject(project, voiceType, templateParams, selectedTemplate?.id);
       console.log('✅ 项目配置已保存:', savedProject);
 
       // 2. 启动生成任务
@@ -387,6 +397,8 @@ const StepManager: React.FC<StepManagerProps> = ({
               setVideoDuration={setVideoDuration}
               playbackSpeed={playbackSpeed}
               setPlaybackSpeed={setPlaybackSpeed}
+              voiceType={voiceType}
+              setVoiceType={setVoiceType}
               content={baseScript}
               setContent={setBaseScript}
               onAIGenerate={() => {}}
@@ -414,8 +426,19 @@ const StepManager: React.FC<StepManagerProps> = ({
               visible={showParamsPanel}
               onClose={() => setShowParamsPanel(false)}
               template={selectedTemplate}
+              params={{}}
+              onParamsChange={() => {}}
               style={styleConfig}
-              onStyleChange={setStyleConfig}
+              setStyle={setStyleConfig}
+              onSaveToBackend={async (config) => {
+                console.log('🎨 StepManager收到ParamsPanel配置:', config);
+                
+                // 将配置保存到全局状态
+                setStyleConfig(config.style);
+                setTemplateParams(config.params);
+                
+                console.log('💾 已更新本地配置状态');
+              }}
             />
           </div>
         );

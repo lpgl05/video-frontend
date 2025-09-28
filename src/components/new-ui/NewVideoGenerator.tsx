@@ -39,8 +39,14 @@ const NewVideoGenerator: React.FC = () => {
   const [videoCount, setVideoCount] = useState(3);
   const [videoDuration, setVideoDuration] = useState(30); // 默认30秒
   const [playbackSpeed, setPlaybackSpeed] = useState(1.0); // 默认1.0倍速
+  const [voiceType, setVoiceType] = useState('female'); // 默认女声
   const [baseScript, setBaseScript] = useState('');
   const [content, setContent] = useState('');
+  
+  // 🚀 调试日志 - 监控voiceType状态变化
+  useEffect(() => {
+    console.log('🎙️ NewVideoGenerator voiceType状态变化:', voiceType);
+  }, [voiceType]);
   
   // 文案生成相关状态
   const [scripts, setScripts] = useState<any[]>([]);
@@ -273,7 +279,7 @@ const NewVideoGenerator: React.FC = () => {
       const { generateScripts } = await import('../../services/api');
       
       // 调用原来的AI生成文案接口
-      const result = await generateScripts(baseScript, 30, videoCount);
+      const result = await generateScripts(baseScript, 30, videoCount, 1.0, voiceType);
       
       // 清除进度模拟，设置为100%
       clearInterval(progressInterval);
@@ -501,6 +507,8 @@ const NewVideoGenerator: React.FC = () => {
           setVideoDuration={setVideoDuration}
           playbackSpeed={playbackSpeed}
           setPlaybackSpeed={setPlaybackSpeed}
+          voiceType={voiceType}
+          setVoiceType={setVoiceType}
           baseScript={baseScript}
           setBaseScript={setBaseScript}
           selectedTemplate={selectedTemplate}

@@ -18,10 +18,10 @@ const getApiBaseUrl = () => {
 
   // 如果没有配置环境变量，根据当前主机动态生成
   const currentHost = window.location.hostname
-  const port = '9000'
+  const port = '9999'
   const protocol = window.location.protocol
 
-  return 'http://39.96.187.7:9000'
+  return 'http://39.96.187.7:9999'
   // return `${protocol}//${currentHost}:${port}`
 }
 
@@ -390,15 +390,25 @@ export const generateScripts = async (
   base_script: string,
   video_duration: number,
   video_count: number,
-  playbackSpeed: number = 1.0
+  playbackSpeed: number = 1.0,
+  voiceType: string = 'female'
 ): Promise<Script[]> => {
   // 将视频时长乘以播放速度
   const adjustedDuration = video_duration * playbackSpeed;
+  
+  // 🚀 调试日志 - 检查API接收到的参数
+  console.log('🔥 generateScripts API调用参数:', {
+    base_script,
+    video_duration: adjustedDuration,
+    video_count,
+    voice_type: voiceType
+  });
   
   const response = await api.post<ApiResponse<Script[]>>('/ai/generate-scripts', {
     base_script,
     video_duration: adjustedDuration, // 传递调整后的时长
     video_count,
+    voice_type: voiceType, // 添加语音类型参数
   })
   
   if (!response.data.success) {
@@ -409,15 +419,76 @@ export const generateScripts = async (
 }
 
 // 项目配置
-export const saveProject = async (config: Omit<ProjectConfig, 'id' | 'createdAt' | 'updatedAt'>): Promise<ProjectConfig> => {
+export const saveProject = async (
+  config: Omit<ProjectConfig, 'id' | 'createdAt' | 'updatedAt'>, 
+  voiceType?: string,
+  templateParams?: any,
+  templateId?: string,
+  portraitMode?: string
+): Promise<ProjectConfig> => {
   // 如果字幕位置选择了竖屏模板，则附带 portraitMode=true，后端据此避免模糊背景
   const body: any = { ...config }
+  
+  // 🚀 将voiceType赋值给voice字段
+  if (voiceType) {
+    body.voice = voiceType;
+    console.log('🎙️ saveProject: 设置voice字段为:', voiceType);
+  }
+  
+  // 🎨 添加模板参数
+  if (templateParams) {
+    body.templateParams = templateParams;
+    // true表示竖屏模板，false表示横屏模板
+    body.portraitMode = portraitMode === 'template2' ? true : false; // 根据选择设置portraitMode
+    console.log('🎨 saveProject: 设置模板参数:', templateParams);
+  }
+  
+  if (templateId) {
+    body.templateId = templateId;
+    console.log('🎯 saveProject: 设置模板ID:', templateId);
+  }
+  
+  // 获取样式配置，确保符合StyleConfig模型要求
+  let style: any = null;
+  const styleString = localStorage.getItem(`videoConfig_${body.selectedTemplate?.id || 'default'}`)
+  if (styleString) {
+    try {
+      style = JSON.parse(styleString);
+    } catch (e) {
+      console.warn('解析style配置失败，使用默认配置:', e);
+      style = null;
+    }
+  }
+  
+  // 如果style为null或格式不正确，使用默认的StyleConfig格式
+  if (!style || !style.title || !style.subtitle) {
+    style = {
+      title: {
+        text: "默认标题",
+        fontSize: 24,
+        color: "#ffffff",
+        position: "top"
+      },
+      subtitle: {
+        text: "默认副标题",
+        fontSize: 18,
+        color: "#ffffff",
+        position: "bottom"
+      }
+    };
+  }
+  
+  body.style = style;
+  
   try {
     const pos = config?.style?.subtitle?.position as any
     if (pos === 'template2') {
       body.portraitMode = true
     }
   } catch {}
+  
+  console.log('🚀 saveProject请求体:', body);
+  
   const response = await api.post<ApiResponse<ProjectConfig>>('/projects', body)
   
   if (!response.data.success) {
