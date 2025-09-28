@@ -432,6 +432,38 @@ export const saveProject = async (
     console.log('🎙️ saveProject: 设置voice字段为:', voiceType);
   }
   
+  // 获取样式配置，确保符合StyleConfig模型要求
+  let style: any = null;
+  const styleString = localStorage.getItem(`videoConfig_${body.selectedTemplate?.id || 'default'}`)
+  if (styleString) {
+    try {
+      style = JSON.parse(styleString);
+    } catch (e) {
+      console.warn('解析style配置失败，使用默认配置:', e);
+      style = null;
+    }
+  }
+  
+  // 如果style为null或格式不正确，使用默认的StyleConfig格式
+  if (!style || !style.title || !style.subtitle) {
+    style = {
+      title: {
+        text: "默认标题",
+        fontSize: 24,
+        color: "#ffffff",
+        position: "top"
+      },
+      subtitle: {
+        text: "默认副标题",
+        fontSize: 18,
+        color: "#ffffff",
+        position: "bottom"
+      }
+    };
+  }
+  
+  body.style = style;
+  
   try {
     const pos = config?.style?.subtitle?.position as any
     if (pos === 'template2') {
