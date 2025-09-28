@@ -102,6 +102,10 @@ const StepManager: React.FC<StepManagerProps> = ({
   const [generatedVideos, setGeneratedVideos] = useState<any[]>([]);
   const [generationProgress, setGenerationProgress] = useState(0);
   const [isGenerating, setIsGenerating] = useState(false);
+  
+  // 添加模板参数状态
+  const [templateParams, setTemplateParams] = useState<any>({});
+  
   const [currentTask, setCurrentTask] = useState<any>(null);
   const [pollingInterval, setPollingInterval] = useState<NodeJS.Timeout | null>(null);
   const [previewVisible, setPreviewVisible] = useState(false);
@@ -218,7 +222,7 @@ const StepManager: React.FC<StepManagerProps> = ({
       
       console.log('🎙️ StepManager生成项目配置:', { voiceType, voice: voiceType || 'female' });
       
-      const savedProject = await saveProject(project, voiceType);
+      const savedProject = await saveProject(project, voiceType, templateParams, selectedTemplate?.id);
       console.log('✅ 项目配置已保存:', savedProject);
 
       // 2. 启动生成任务
@@ -422,8 +426,19 @@ const StepManager: React.FC<StepManagerProps> = ({
               visible={showParamsPanel}
               onClose={() => setShowParamsPanel(false)}
               template={selectedTemplate}
+              params={{}}
+              onParamsChange={() => {}}
               style={styleConfig}
-              onStyleChange={setStyleConfig}
+              setStyle={setStyleConfig}
+              onSaveToBackend={async (config) => {
+                console.log('🎨 StepManager收到ParamsPanel配置:', config);
+                
+                // 将配置保存到全局状态
+                setStyleConfig(config.style);
+                setTemplateParams(config.params);
+                
+                console.log('💾 已更新本地配置状态');
+              }}
             />
           </div>
         );

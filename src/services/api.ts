@@ -421,7 +421,10 @@ export const generateScripts = async (
 // 项目配置
 export const saveProject = async (
   config: Omit<ProjectConfig, 'id' | 'createdAt' | 'updatedAt'>, 
-  voiceType?: string
+  voiceType?: string,
+  templateParams?: any,
+  templateId?: string,
+  portraitMode?: string
 ): Promise<ProjectConfig> => {
   // 如果字幕位置选择了竖屏模板，则附带 portraitMode=true，后端据此避免模糊背景
   const body: any = { ...config }
@@ -430,6 +433,19 @@ export const saveProject = async (
   if (voiceType) {
     body.voice = voiceType;
     console.log('🎙️ saveProject: 设置voice字段为:', voiceType);
+  }
+  
+  // 🎨 添加模板参数
+  if (templateParams) {
+    body.templateParams = templateParams;
+    // true表示竖屏模板，false表示横屏模板
+    body.portraitMode = portraitMode === 'template2' ? true : false; // 根据选择设置portraitMode
+    console.log('🎨 saveProject: 设置模板参数:', templateParams);
+  }
+  
+  if (templateId) {
+    body.templateId = templateId;
+    console.log('🎯 saveProject: 设置模板ID:', templateId);
   }
   
   // 获取样式配置，确保符合StyleConfig模型要求

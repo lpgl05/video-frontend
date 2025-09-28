@@ -29,6 +29,8 @@ interface ParamsPanelProps {
   // 添加样式配置相关props
   style?: StyleConfig;
   setStyle?: (style: StyleConfig) => void;
+  // 添加保存配置到后端的回调
+  onSaveToBackend?: (config: { params: TemplateParams; style: StyleConfig }) => void;
 }
 
 const ParamsPanel: React.FC<ParamsPanelProps> = ({
@@ -38,7 +40,8 @@ const ParamsPanel: React.FC<ParamsPanelProps> = ({
   onParamsChange,
   onClose,
   style,
-  setStyle
+  setStyle,
+  onSaveToBackend
 }) => {
   const [form] = Form.useForm();
   
@@ -843,18 +846,32 @@ const ParamsPanel: React.FC<ParamsPanelProps> = ({
     </div>
   );
 
-  // 保存配置到localStorage
+  // 保存配置到localStorage和后端
   const saveConfig = () => {
+    const currentParams = form.getFieldsValue();
     const configToSave = {
-      params: form.getFieldsValue(),
+      params: currentParams,
       style: currentStyle
     };
-    // 确保template.id存在
+    
+    // 保存到localStorage
     if (template?.id) {
       localStorage.setItem(`videoConfig_${template.id}`, JSON.stringify(configToSave));
+      console.log('🎨 ParamsPanel保存配置:', configToSave);
     } else {
       console.error('Cannot save config: template id is missing');
     }
+    
+    // 通知父组件保存到后端
+    if (onSaveToBackend) {
+      onSaveToBackend(configToSave);
+    }
+  };
+
+  // 处理最终确定按钮
+  const handleConfirm = () => {
+    saveConfig();
+    onClose();
   };
 
   // 加载配置
@@ -896,10 +913,7 @@ const ParamsPanel: React.FC<ParamsPanelProps> = ({
         <Button key="cancel" onClick={onClose}>
           取消
         </Button>,
-        <Button key="ok" type="primary" onClick={() => {
-          saveConfig();
-          onClose();
-        }}>
+        <Button key="ok" type="primary" onClick={handleConfirm}>
           确定
         </Button>
       ]}
