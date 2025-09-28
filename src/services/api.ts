@@ -396,6 +396,14 @@ export const generateScripts = async (
   // 将视频时长乘以播放速度
   const adjustedDuration = video_duration * playbackSpeed;
   
+  // 🚀 调试日志 - 检查API接收到的参数
+  console.log('🔥 generateScripts API调用参数:', {
+    base_script,
+    video_duration: adjustedDuration,
+    video_count,
+    voice_type: voiceType
+  });
+  
   const response = await api.post<ApiResponse<Script[]>>('/ai/generate-scripts', {
     base_script,
     video_duration: adjustedDuration, // 传递调整后的时长

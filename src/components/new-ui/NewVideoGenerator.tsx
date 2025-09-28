@@ -43,6 +43,11 @@ const NewVideoGenerator: React.FC = () => {
   const [baseScript, setBaseScript] = useState('');
   const [content, setContent] = useState('');
   
+  // 🚀 调试日志 - 监控voiceType状态变化
+  useEffect(() => {
+    console.log('🎙️ NewVideoGenerator voiceType状态变化:', voiceType);
+  }, [voiceType]);
+  
   // 文案生成相关状态
   const [scripts, setScripts] = useState<any[]>([]);
   const [generating, setGenerating] = useState(false);

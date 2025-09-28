@@ -78,6 +78,15 @@ const ProjectConfig: React.FC<ProjectConfigProps> = ({
       // 使用原来的API接口和逻辑
       const { generateScripts } = await import('../../services/api');
       
+      // 🚀 调试日志 - 检查传递的参数
+      console.log('🎙️ ProjectConfig AI生成参数:', {
+        baseScript,
+        videoDuration,
+        videoCount,
+        playbackSpeed,
+        voiceType
+      });
+      
       // 调用原来的AI生成文案接口，传递语音类型参数
       const result = await generateScripts(baseScript, videoDuration, videoCount, playbackSpeed, voiceType);
       
@@ -244,8 +253,10 @@ const ProjectConfig: React.FC<ProjectConfigProps> = ({
             <label>配音类型</label>
             <Select
               value={voiceType}
+              defaultValue="female"
               onChange={(value: string) => {
                 setVoiceType(value);
+                console.log('🎙️ 语音类型选择变更:', value);
                 message.info(`已选择: ${value === 'male' ? '男声' : '女声'}`);
               }}
               size="large"
