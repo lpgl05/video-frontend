@@ -62,7 +62,7 @@ const ScriptConfig: React.FC<ScriptConfigProps> = ({
     }, 200)
 
     try {
-      const result = await generateScripts(localBaseScript, videoDuration, videoCount)
+      const result = await generateScripts(localBaseScript, videoDuration, videoCount, 1.0, 'female')
       
       // 清除进度模拟，设置为100%
       clearInterval(progressInterval)

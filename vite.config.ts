@@ -15,7 +15,7 @@ export default defineConfig({
     port: 4000,
     proxy: {
       '/api': {
-        target: 'http://39.96.187.7:9000', // 测试环境后端地址
+        target: 'http://39.96.187.7:9999', // 测试环境后端地址
         changeOrigin: true,
       },
     },

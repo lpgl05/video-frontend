@@ -21,6 +21,8 @@ interface StepManagerProps {
   setVideoDuration: (duration: number) => void;
   playbackSpeed?: number;
   setPlaybackSpeed?: (speed: number) => void;
+  voiceType?: string;
+  setVoiceType?: (type: string) => void;
   baseScript: string;
   setBaseScript: (script: string) => void;
   
@@ -73,6 +75,8 @@ const StepManager: React.FC<StepManagerProps> = ({
   setVideoDuration,
   playbackSpeed = 1.0,
   setPlaybackSpeed = () => {},
+  voiceType = 'female',
+  setVoiceType = () => {},
   baseScript,
   setBaseScript,
   selectedTemplate,
@@ -387,6 +391,8 @@ const StepManager: React.FC<StepManagerProps> = ({
               setVideoDuration={setVideoDuration}
               playbackSpeed={playbackSpeed}
               setPlaybackSpeed={setPlaybackSpeed}
+              voiceType={voiceType}
+              setVoiceType={setVoiceType}
               content={baseScript}
               setContent={setBaseScript}
               onAIGenerate={() => {}}

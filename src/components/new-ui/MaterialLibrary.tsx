@@ -49,7 +49,7 @@ const MaterialLibrary: React.FC<MaterialLibraryProps> = ({
   const loadMaterials = async () => {
     setLoading(true);
     try {
-      let materialsUrl = 'http://39.96.187.7:9000/api/materials';
+      let materialsUrl = 'http://39.96.187.7:9999/api/materials';
       // let materialsUrl = '/api/materials'
       // 调用真实的素材获取接口
       const response = await fetch(materialsUrl);
@@ -126,7 +126,7 @@ const MaterialLibrary: React.FC<MaterialLibraryProps> = ({
         setUploadingFiles(prev => ({ ...prev, [fileKey]: false }));
         return;
       }
-      uploadEndpoint = 'http://39.96.187.7:9000' + uploadEndpoint;
+      uploadEndpoint = 'http://39.96.187.7:9999' + uploadEndpoint;
 
       // 模拟上传进度
       const progressInterval = setInterval(() => {

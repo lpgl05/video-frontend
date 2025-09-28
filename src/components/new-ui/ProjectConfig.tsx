@@ -20,6 +20,8 @@ interface ProjectConfigProps {
   setVideoDuration: (duration: number) => void;
   playbackSpeed?: number;
   setPlaybackSpeed?: (speed: number) => void;
+  voiceType?: string;
+  setVoiceType?: (type: string) => void;
   content: string;
   setContent: (content: string) => void;
   onAIGenerate: () => void;
@@ -36,6 +38,8 @@ const ProjectConfig: React.FC<ProjectConfigProps> = ({
   setVideoDuration,
   playbackSpeed = 1.0,
   setPlaybackSpeed = () => {},
+  voiceType = 'female',
+  setVoiceType = () => {},
   content: _content,
   setContent: _setContent,
   onAIGenerate: _onAIGenerate,
@@ -74,8 +78,8 @@ const ProjectConfig: React.FC<ProjectConfigProps> = ({
       // 使用原来的API接口和逻辑
       const { generateScripts } = await import('../../services/api');
       
-      // 调用原来的AI生成文案接口
-      const result = await generateScripts(baseScript, videoDuration, videoCount, playbackSpeed);
+      // 调用原来的AI生成文案接口，传递语音类型参数
+      const result = await generateScripts(baseScript, videoDuration, videoCount, playbackSpeed, voiceType);
       
       // 清除进度模拟，设置为100%
       clearInterval(progressInterval);
@@ -83,18 +87,27 @@ const ProjectConfig: React.FC<ProjectConfigProps> = ({
       
       // 兼容后端返回字符串数组的情况
       const generatedScripts = Array.isArray(result)
-        ? result.map((content: string) => ({
-            id: `script_${Date.now()}_${Math.random()}`,
-            content,
-            selected: true, // 默认选中所有生成的文案
-            generatedAt: new Date(),
-          }))
-        : Array.isArray(result) ? result.map((script: any) => ({
-            ...script,
-            selected: true // 如果是对象数组，也默认选中
-          })) : [];
+        ? result.map((content: any, index: number) => {
+            // 如果是字符串，转换为Script对象
+            if (typeof content === 'string') {
+              return {
+                id: `script_${Date.now()}_${index}`,
+                content,
+                selected: true,
+                generatedAt: new Date(),
+              };
+            }
+            // 如果是对象，确保包含必要字段
+            return {
+              id: content.id || `script_${Date.now()}_${index}`,
+              content: content.content || content,
+              selected: true,
+              generatedAt: new Date(content.generatedAt || Date.now()),
+            };
+          })
+        : [];
       
-      console.log('生成的文案状态:', generatedScripts.map(s => ({ id: s.id, selected: s.selected })));
+      console.log('生成的文案状态:', generatedScripts.map((s: Script) => ({ id: s.id, selected: s.selected })));
       
       setScripts(generatedScripts);
       if (setExternalScripts) {
@@ -152,8 +165,18 @@ const ProjectConfig: React.FC<ProjectConfigProps> = ({
       </div>
       
       <div className="config-content">
-        <div className="config-row">
-          <div className="config-item">
+        <div
+          className="config-row"
+          style={{
+            display: 'flex',
+            gap: 16,
+            alignItems: 'flex-start',
+            flexWrap: 'nowrap',
+            overflowX: 'auto',
+            width: '100%'
+          }}
+        >
+          <div className="config-item" style={{ flex: '0 0 240px', minWidth: 180 }}>
             <label>项目名称</label>
             <Input
               value={projectName}
@@ -162,8 +185,8 @@ const ProjectConfig: React.FC<ProjectConfigProps> = ({
               size="large"
             />
           </div>
-          
-          <div className="config-item">
+
+          <div className="config-item" style={{ flex: '0 0 140px', minWidth: 120 }}>
             <label>生成数量</label>
             <Select
               value={videoCount}
@@ -179,8 +202,7 @@ const ProjectConfig: React.FC<ProjectConfigProps> = ({
               ]}
             />
           </div>
-          
-          <div className="config-item">
+          <div className="config-item" style={{ flex: '0 0 180px', minWidth: 140 }}>
             <label>生成视频的时长</label>
             <div style={{ display: 'flex', gap: '16px' }}>
               <div style={{ flex: 1 }}>
@@ -199,7 +221,8 @@ const ProjectConfig: React.FC<ProjectConfigProps> = ({
               </div>
             </div>
           </div>
-          <div className="config-item">
+
+          <div className="config-item" style={{ flex: '0 0 120px', minWidth: 110 }}>
             <label>倍速</label>
             <div style={{ display: 'flex', gap: '16px' }}>
               <div style={{ flex: 1 }}>
@@ -208,13 +231,30 @@ const ProjectConfig: React.FC<ProjectConfigProps> = ({
                   max={2.0}
                   step={0.1}
                   value={playbackSpeed}
-                  onChange={(value) => setPlaybackSpeed(value as number)}
+                  onChange={(value) => setPlaybackSpeed?.(value as number)}
                   size="large"
                   style={{ width: '100%' }}
                   precision={1}
                 />
               </div>
             </div>
+          </div>
+
+          <div className="config-item" style={{ flex: '0 0 140px', minWidth: 120 }}>
+            <label>配音类型</label>
+            <Select
+              value={voiceType}
+              onChange={(value: string) => {
+                setVoiceType(value);
+                message.info(`已选择: ${value === 'male' ? '男声' : '女声'}`);
+              }}
+              size="large"
+              style={{ width: '100%' }}
+              options={[
+                { label: '男声', value: 'male' },
+                { label: '女声', value: 'female' }
+              ]}
+            />
           </div>
         </div>
         

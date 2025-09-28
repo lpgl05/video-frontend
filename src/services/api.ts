@@ -18,10 +18,10 @@ const getApiBaseUrl = () => {
 
   // 如果没有配置环境变量，根据当前主机动态生成
   const currentHost = window.location.hostname
-  const port = '9000'
+  const port = '9999'
   const protocol = window.location.protocol
 
-  return 'http://39.96.187.7:9000'
+  return 'http://39.96.187.7:9999'
   // return `${protocol}//${currentHost}:${port}`
 }
 
@@ -390,7 +390,8 @@ export const generateScripts = async (
   base_script: string,
   video_duration: number,
   video_count: number,
-  playbackSpeed: number = 1.0
+  playbackSpeed: number = 1.0,
+  voiceType: string = 'female'
 ): Promise<Script[]> => {
   // 将视频时长乘以播放速度
   const adjustedDuration = video_duration * playbackSpeed;
@@ -399,6 +400,7 @@ export const generateScripts = async (
     base_script,
     video_duration: adjustedDuration, // 传递调整后的时长
     video_count,
+    voice_type: voiceType, // 添加语音类型参数
   })
   
   if (!response.data.success) {
