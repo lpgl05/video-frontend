@@ -419,15 +419,28 @@ export const generateScripts = async (
 }
 
 // 项目配置
-export const saveProject = async (config: Omit<ProjectConfig, 'id' | 'createdAt' | 'updatedAt'>): Promise<ProjectConfig> => {
+export const saveProject = async (
+  config: Omit<ProjectConfig, 'id' | 'createdAt' | 'updatedAt'>, 
+  voiceType?: string
+): Promise<ProjectConfig> => {
   // 如果字幕位置选择了竖屏模板，则附带 portraitMode=true，后端据此避免模糊背景
   const body: any = { ...config }
+  
+  // 🚀 将voiceType赋值给voice字段
+  if (voiceType) {
+    body.voice = voiceType;
+    console.log('🎙️ saveProject: 设置voice字段为:', voiceType);
+  }
+  
   try {
     const pos = config?.style?.subtitle?.position as any
     if (pos === 'template2') {
       body.portraitMode = true
     }
   } catch {}
+  
+  console.log('🚀 saveProject请求体:', body);
+  
   const response = await api.post<ApiResponse<ProjectConfig>>('/projects', body)
   
   if (!response.data.success) {

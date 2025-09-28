@@ -216,7 +216,7 @@ const VideoMixer: React.FC = () => {
         style,
       }
 
-      const savedProject = await saveProject(project)
+      const savedProject = await saveProject(project, voice)
 
       // 2. 立即启动生成任务（不等待完成）
       const task = await startGeneration(savedProject.id)

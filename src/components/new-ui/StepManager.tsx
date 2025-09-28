@@ -211,12 +211,14 @@ const StepManager: React.FC<StepManagerProps> = ({
         duration: videoDuration.toString(), // 后端期望字符串类型
         playbackSpeed: playbackSpeed.toString(), // 倍速
         videoCount: generateCount,
-        voice: 'default' as const,
+        voice: voiceType || 'female', // 使用传递的voiceType参数
         // style: styleConfig,
         style: style
       };
       
-      const savedProject = await saveProject(project);
+      console.log('🎙️ StepManager生成项目配置:', { voiceType, voice: voiceType || 'female' });
+      
+      const savedProject = await saveProject(project, voiceType);
       console.log('✅ 项目配置已保存:', savedProject);
 
       // 2. 启动生成任务
