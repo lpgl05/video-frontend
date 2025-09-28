@@ -1,0 +1,79 @@
+/* 自定义字体样式 */
+
+/* 预加载一些常用字体 */
+@font-face {
+  font-family: 'LAOBAOKAN';
+  src: url('https://picture-share-001-dpxj.oss-cn-beijing.aliyuncs.com/ziti/LAOBAOKAN.ttf') format('truetype');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'MiaobiJunli';
+  src: url('https://picture-share-001-dpxj.oss-cn-beijing.aliyuncs.com/%E5%A6%99%E7%AC%94%E7%8F%BA%E4%BF%90%E4%BD%93.ttf') format('truetype');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'MiaobiDuanmu';
+  src: url('https://picture-share-001-dpxj.oss-cn-beijing.aliyuncs.com/%E5%A6%99%E7%AC%94%E6%AE%B5%E6%85%95%E4%BD%93.ttf') format('truetype');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'SourceHanSansCN-Heavy';
+  src: url('/fonts/SourceHanSansCN-Heavy.otf') format('opentype');
+  font-display: swap;
+}
+
+/* 样式预览画布样式 */
+.style-preview-canvas {
+  border: 1px solid #d9d9d9;
+  border-radius: 8px;
+  background-color: #fafafa;
+}
+
+/* 字体选择下拉样式 */
+.font-select .ant-select-selector {
+  font-family: var(--preview-font-family, 'Microsoft YaHei, sans-serif');
+}
+
+/* 字体预览样式 */
+.font-preview-text {
+  padding: 8px 12px;
+  border: 1px solid #e8e8e8;
+  border-radius: 4px;
+  margin-top: 8px;
+  background: #f5f5f5;
+  font-size: 14px;
+  text-align: center;
+}
+
+/* 高级字体设置模态框样式 */
+.font-advanced-modal .ant-modal-body {
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+/* 样式预览卡片 */
+.style-preview-card {
+  text-align: center;
+}
+
+.style-preview-info {
+  margin-top: 8px;
+  font-size: 12px;
+  color: #666;
+  text-align: center;
+}
+
+/* 字体样式开关组 */
+.font-style-switches {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+}
+
+.font-style-switches .ant-switch {
+  margin-left: 8px;
+}

@@ -1,0 +1,1046 @@
+/* 新UI样式文件 */
+.new-video-generator {
+  max-width: none !important; /* 移除最大宽度限制 */
+  margin: 0 auto;
+  /* padding: 20px; */
+  background: transparent !important;
+  min-height: auto !important;
+  position: relative !important;
+  width: 100% !important; /* 确保宽度为100% */
+}
+
+/* 强制覆盖所有可能的背景样式 */
+.new-video-generator,
+.new-video-generator *,
+.ant-layout-content,
+.main-content,
+.app-content {
+  background: transparent !important;
+}
+
+/* 主页面全屏背景 - 简化层级，直接覆盖整个主页面 */
+.new-video-generator::after {
+  content: '' !important;
+  position: fixed !important;
+  top: 0 !important;
+  left: 200px !important; /* 左侧导航栏宽度 */
+  right: 0 !important;
+  bottom: 0 !important;
+  width: calc(100% - 200px) !important; /* 减去左侧导航栏宽度 */
+  height: 100vh !important;
+  background: #ffffff !important; /* 纯白色背景 */
+  z-index: -1 !important; /* 最底层 */
+  /* 移除阴影、边框、圆角，让它成为纯背景 */
+  transition: left 0.2s ease, width 0.2s ease !important;
+}
+
+/* 备用方案已删除 - 只使用::after伪元素 */
+
+/* 左侧导航栏收缩状态下的背景调整 */
+.ant-layout-sider-collapsed ~ .ant-layout .new-video-generator::after {
+  left: 80px !important; /* 收缩后的导航栏宽度 */
+  width: calc(100% - 80px) !important; /* 减去收缩后的导航栏宽度 */
+}
+
+.generator-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: relative;
+  z-index: 10 !important; /* 确保内容在背景之上 */
+  width: 100% !important; /* 确保容器宽度为100% */
+  max-width: none !important; /* 移除最大宽度限制 */
+}
+
+/* 步骤管理样式 - 添加卡片效果 */
+.step-manager {
+  background: white !important; /* 白色背景 */
+  /* border-radius: 12px !important;  */
+  /* 圆角 */
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1) !important; /* 阴影 */
+  border: 1px solid #f0f0f0 !important; /* 边框 */
+  margin-bottom: 16px !important; /* 底部间距 */
+  overflow: visible; /* 改为可见 */
+  position: relative;
+  z-index: 10 !important; /* 确保步骤管理器在背景之上 */
+  width: 100% !important; /* 与主页面背景宽度一致 */
+  max-width: none !important; /* 移除最大宽度限制 */
+}
+
+/* 步骤指示器样式优化 - 酷炫效果 */
+.ant-steps {
+  justify-content: center !important; /* 居中显示 */
+  /* background: linear-gradient(135deg, rgba(24, 144, 255, 0.05) 0%, rgba(114, 46, 209, 0.05) 100%) !important; */
+  border-radius: 16px !important;
+  padding: 16px 24px !important;
+  /* margin: 0 20px !important; */
+  box-shadow: 0 4px 20px rgba(24, 144, 255, 0.1) !important;
+  border: 1px solid rgba(24, 144, 255, 0.1) !important;
+}
+
+.ant-steps-item-icon {
+  background: linear-gradient(135deg, #1890ff 0%, #722ed1 100%) !important; /* 渐变背景 */
+  border-color: transparent !important;
+  color: white !important; /* 白色文字 */
+  font-weight: bold !important;
+  font-size: 14px !important;
+  width: 36px !important;
+  height: 36px !important;
+  line-height: 34px !important;
+  /* box-shadow: 0 4px 12px rgba(24, 144, 255, 0.3) !important; */
+  transition: all 0.3s ease !important;
+}
+
+.ant-steps-item-process .ant-steps-item-icon {
+  background: linear-gradient(135deg, #1890ff 0%, #40a9ff 100%) !important; /* 当前步骤蓝色渐变 */
+  border-color: transparent !important;
+  color: white !important;
+  /* box-shadow: 0 6px 20px rgba(24, 144, 255, 0.4) !important; */
+  /* transform: scale(1.1) !important; */
+}
+
+.ant-steps-item-wait .ant-steps-item-icon {
+  background: linear-gradient(135deg, #d9d9d9 0%, #f0f0f0 100%) !important; /* 未完成步骤灰色渐变 */
+  border-color: transparent !important;
+  color: #999 !important;
+  /* box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important; */
+}
+
+.ant-steps-item-finish .ant-steps-item-icon {
+  background: linear-gradient(135deg, #52c41a 0%, #73d13d 100%) !important; /* 已完成步骤绿色渐变 */
+  border-color: transparent !important;
+  color: white !important;
+  /* box-shadow: 0 4px 16px rgba(82, 196, 26, 0.3) !important; */
+}
+
+/* 素材卡片精致样式优化 - 减少嵌套 */
+.material-card {
+  border-radius: 8px !important;
+  border: 1px solid transparent !important; /* 默认透明边框 */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important; /* 减少阴影 */
+  transition: all 0.3s ease !important;
+  overflow: hidden !important;
+  background: white !important;
+  margin-bottom: 8px !important; /* 减少间距 */
+}
+
+.material-card:hover {
+  border-color: #1890ff !important; /* 悬停时显示边框 */
+  box-shadow: 0 2px 8px rgba(24, 144, 255, 0.15) !important;
+  transform: translateY(-1px) !important; /* 减少移动距离 */
+}
+
+.material-card.selected {
+  border-color: #52c41a !important;
+  background: linear-gradient(135deg, #f6ffed 0%, #ffffff 100%) !important;
+  box-shadow: 0 0 0 2px rgba(82, 196, 26, 0.2), 0 2px 8px rgba(82, 196, 26, 0.1) !important;
+  transform: translateY(-1px) !important;
+}
+
+.material-preview {
+  height: 60px !important; /* 降低高度到一半 */
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: #fafafa !important;
+  cursor: pointer !important;
+  position: relative !important;
+}
+
+.material-placeholder {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 100% !important;
+  color: #999 !important;
+}
+
+.material-icon {
+  font-size: 16px !important; /* 进一步减小图标大小 */
+  margin-bottom: 1px !important;
+}
+
+.material-name {
+  font-size: 10px !important; /* 进一步减小字体 */
+  text-align: center !important;
+  padding: 0 4px !important;
+  line-height: 1.0 !important;
+  max-height: 2.0em !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2 !important;
+  line-clamp: 2 !important;
+  -webkit-box-orient: vertical !important;
+}
+
+.step-header {
+  padding: 20px 100px 0 100px !important; /* 恢复内边距 */
+  /* border-bottom: 1px solid #f0f0f0 !important;  */
+  /* 添加分割线 */
+  background: transparent !important; /* 透明背景 */
+}
+
+.step-body {
+  padding: 30px 100px 100px !important; /* 减少内边距，让内部卡片更协调 */
+  min-height: auto; /* 移除最小高度 */
+}
+
+.step-footer {
+  padding: 16px 24px 24px 24px !important; /* 调整内边距：上16px，下24px */
+  border-top: none !important; /* 移除边框 */
+  background: transparent !important; /* 透明背景 */
+  margin: 0 !important; /* 移除外边距 */
+}
+
+.step-actions {
+  display: flex;
+  justify-content: center; /* 改为居中 */
+  align-items: center;
+  gap: 16px; /* 添加按钮间距 */
+}
+
+.step-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.generate-section {
+  margin-top: 32px;
+  padding: 24px;
+  background: #f6ffed;
+  border: 2px solid #52c41a;
+  border-radius: 12px;
+  text-align: center;
+}
+
+/* 标题样式优化 - 添加左侧竖条 */
+.section-title {
+  position: relative;
+  padding-left: 16px;
+  font-weight: bold;
+  color: #262626;
+  font-size: 18px;
+  margin-bottom: 16px;
+}
+
+.section-title::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 12px;
+  height: 24px;
+  background: linear-gradient(135deg, #1890ff, #52c41a);
+  border-radius: 2px;
+}
+
+/* 移除多余的浅灰色矩形背景 - 已删除，让各组件使用自己的样式 */
+
+/* 确保Ant Design Card组件没有多余的背景 */
+.ant-card {
+  background: white !important;
+  border: 1px solid #f0f0f0 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+.ant-card-body {
+  background: white !important;
+  padding: 16px !important;
+}
+
+.ant-card-cover {
+  margin-top: 0 !important;
+  margin-inline-start: 0 !important;
+  margin-inline-end: 0 !important;
+  /* background: #fafafa !important; */
+}
+
+/* 项目配置样式 - 增强卡片效果 */
+.project-config {
+  background: white !important;
+  border-radius: 12px !important;
+  padding: 20px !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15) !important; /* 增强阴影 */
+  margin-bottom: 12px !important; /* 减少底部间距 */
+  border: 1px solid #e8e8e8 !important; /* 更明显的边框 */
+  position: relative !important;
+  z-index: 10 !important;
+  width: 100% !important; /* 确保宽度与主页面一致 */
+  max-width: none !important; /* 移除最大宽度限制 */
+}
+
+/* 项目配置字段值字号优化 */
+.project-config .ant-select-selection-item {
+  font-size: 14px !important; /* 调小字号 */
+  font-weight: normal !important;
+}
+
+.project-config .ant-input {
+  font-size: 14px !important; /* 调小字号 */
+}
+
+.project-config .ant-select-selector {
+  font-size: 14px !important; /* 调小字号 */
+}
+
+.project-config .ant-select-selection-placeholder {
+  font-size: 14px !important; /* 调小字号 */
+}
+
+/* 基础文案提示文字字号优化 */
+.project-config .ant-input::placeholder {
+  font-size: 12px !important; /* 调小提示文字字号 */
+  color: #999 !important;
+}
+
+.project-config .ant-input {
+  font-size: 14px !important; /* 输入文字字号 */
+}
+
+/* AI生成文案按钮样式优化 */
+.project-config .ant-btn-primary {
+  background: #1890ff !important;
+  border-color: #1890ff !important;
+  box-shadow: 0 2px 8px rgba(24, 144, 255, 0.3) !important; /* 添加阴影 */
+  font-weight: 500 !important;
+  transition: all 0.3s ease !important;
+}
+
+.project-config .ant-btn-primary:hover {
+  background: #40a9ff !important;
+  border-color: #40a9ff !important;
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.4) !important; /* 悬停时增强阴影 */
+  transform: translateY(-1px) !important; /* 轻微上移效果 */
+}
+
+.project-config .ant-btn-primary:active {
+  transform: translateY(0) !important;
+  box-shadow: 0 2px 8px rgba(24, 144, 255, 0.3) !important;
+}
+
+.project-config .ant-btn-primary:disabled {
+  background: #d9d9d9 !important;
+  border-color: #d9d9d9 !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+/* 模板选择右上角按钮样式优化 */
+.template-selection .ant-btn {
+  background: #1890ff !important;
+  border-color: #1890ff !important;
+  color: white !important;
+  box-shadow: 0 2px 8px rgba(24, 144, 255, 0.3) !important;
+  font-weight: 500 !important;
+  transition: all 0.3s ease !important;
+}
+
+.template-selection .ant-btn:hover {
+  background: #40a9ff !important;
+  border-color: #40a9ff !important;
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.4) !important;
+  transform: translateY(-1px) !important;
+}
+
+.template-selection .ant-btn:active {
+  transform: translateY(0) !important;
+  box-shadow: 0 2px 8px rgba(24, 144, 255, 0.3) !important;
+}
+
+/* 模板选择标题字号优化 */
+.template-selection .template-section-title {
+  font-size: 14px !important; /* 与基础文案保持一致 */
+  font-weight: 500 !important;
+  color: #262626 !important;
+  margin-bottom: 12px !important;
+}
+
+/* 模板选择区域整体样式优化 */
+.template-selection {
+  background: white !important;
+  border-radius: 12px !important;
+  padding: 20px !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15) !important; /* 增强阴影 */
+  margin-bottom: 0 !important; /* 移除底部间距，因为step-footer会处理 */
+  border: 1px solid #e8e8e8 !important; /* 更明显的边框 */
+  position: relative !important;
+  z-index: 10 !important;
+  width: 100% !important; /* 确保宽度与主页面一致 */
+  max-width: none !important; /* 移除最大宽度限制 */
+}
+
+.config-header h3 {
+  margin: 0 0 12px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #262626;
+}
+
+.config-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.config-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 20px;
+}
+
+.config-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.config-item label {
+  font-weight: 500;
+  color: #595959;
+  font-size: 14px;
+}
+
+.content-input {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.content-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* 删除重复的模板选择样式定义 */
+
+.template-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.template-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #262626;
+}
+
+.template-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.template-section h4 {
+  margin: 0 0 16px 0 !important;
+  font-size: 14px !important; /* 与基础文案保持一致 */
+  font-weight: 500 !important;
+  color: #262626 !important; /* 更深的颜色 */
+}
+
+.template-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)) !important;
+  gap: 16px !important;
+  margin-bottom: 20px !important; /* 增加底部间距 */
+}
+
+.template-card {
+  border: 2px solid #d9d9d9 !important; /* 更明显的边框 */
+  border-radius: 8px !important;
+  transition: all 0.3s ease !important;
+  cursor: pointer !important;
+  background: white !important; /* 确保背景是白色 */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important; /* 更明显的阴影 */
+  position: relative !important;
+  z-index: 5 !important; /* 确保在背景之上 */
+}
+
+.template-card:hover {
+  border-color: #1890ff !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 20px rgba(24, 144, 255, 0.25) !important;
+}
+
+.template-card.selected {
+  border-color: #52c41a !important;
+  background-color: #f6ffed !important;
+  box-shadow: 0 0 0 3px rgba(82, 196, 26, 0.3), 0 6px 20px rgba(82, 196, 26, 0.3) !important;
+  transform: translateY(-2px) !important;
+}
+
+/* 模板卡片标题样式优化 */
+.template-card .ant-card-meta-title {
+  font-size: 13px !important; /* 稍微调小 */
+  font-weight: 500 !important;
+  text-align: center !important;
+  margin: 0 !important;
+  color: #262626 !important;
+  line-height: 1.4 !important; /* 增加行高 */
+}
+
+.template-preview {
+  height: 120px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: #f5f5f5 !important; /* 更明显的背景色 */
+  border-radius: 6px 6px 0 0 !important;
+  overflow: hidden !important;
+  position: relative !important;
+  margin: 0 !important; /* 确保没有外边距 */
+  padding: 0 !important; /* 确保没有内边距 */
+}
+
+.template-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 新的模板图标样式 */
+.template-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.icon-circle {
+  width: 60px !important;
+  height: 60px !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-weight: 700 !important; /* 加粗字体 */
+  font-size: 20px !important; /* 增大字号 */
+  color: white !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important; /* 更明显的阴影 */
+  transition: all 0.3s ease !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important; /* 添加文字阴影 */
+}
+
+.none-icon .icon-circle {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  border: 2px solid rgba(255, 255, 255, 0.3) !important; /* 添加白色边框 */
+}
+
+.template1-icon .icon-circle {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%) !important; /* 更鲜艳的红色 */
+  border: 2px solid rgba(255, 255, 255, 0.3) !important; /* 添加白色边框 */
+}
+
+.template2-icon .icon-circle {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%) !important; /* 保持蓝色 */
+  border: 2px solid rgba(255, 255, 255, 0.3) !important; /* 添加白色边框 */
+}
+
+.custom-icon .icon-circle {
+  background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%) !important;
+  border: 2px solid rgba(255, 255, 255, 0.3) !important; /* 添加白色边框 */
+}
+
+.template-card:hover .icon-circle {
+  transform: scale(1.1) !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3) !important;
+}
+
+.template-card.selected .icon-circle {
+  transform: scale(1.05) !important;
+  box-shadow: 0 0 0 3px rgba(82, 196, 26, 0.3), 0 6px 20px rgba(82, 196, 26, 0.4) !important;
+}
+
+/* 选中指示器样式 */
+.selected-indicator {
+  position: absolute !important;
+  top: 8px !important;
+  right: 8px !important;
+  width: 24px !important;
+  height: 24px !important;
+  background: #52c41a !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-shadow: 0 4px 12px rgba(82, 196, 26, 0.4) !important; /* 更明显的阴影 */
+  animation: checkmarkAppear 0.3s ease-out !important;
+  z-index: 10 !important;
+}
+
+.checkmark {
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  line-height: 1;
+}
+
+@keyframes checkmarkAppear {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.no-template-icon {
+  font-size: 48px;
+  color: #d9d9d9;
+}
+
+.template-placeholder {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  border-radius: 4px;
+}
+
+.placeholder-content {
+  text-align: center;
+  color: #666;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.material-placeholder {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 4px;
+}
+
+.material-placeholder .material-icon {
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+
+.material-placeholder .material-name {
+  font-size: 12px;
+  text-align: center;
+  padding: 0 8px;
+  word-break: break-all;
+}
+
+.empty-templates {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 20px;
+  color: #8c8c8c;
+  background: #fafafa;
+  border-radius: 4px;
+  border: 1px dashed #d9d9d9;
+}
+
+.template-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.template-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  border: 1px solid #f0f0f0;
+  border-radius: 8px;
+}
+
+.template-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.template-info img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.template-details h4 {
+  margin: 0 0 4px 0;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.template-details p {
+  margin: 0;
+  font-size: 12px;
+  color: #8c8c8c;
+}
+
+.template-actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* 素材库样式 */
+.material-library {
+  background: white;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 16px;
+}
+
+.library-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.library-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #262626;
+}
+
+.material-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.material-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.section-header h4 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+  color: #595959;
+}
+
+.material-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.material-card {
+  border: 2px solid #f0f0f0;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  overflow: hidden;
+  background: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.material-card:hover {
+  border-color: #1890ff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.15);
+}
+
+.material-card.selected {
+  border-color: #52c41a;
+  background: linear-gradient(135deg, #f6ffed 0%, #e6f7ff 100%);
+  box-shadow: 0 4px 12px rgba(82, 196, 26, 0.3);
+  transform: translateY(-2px);
+  position: relative;
+}
+
+.material-card.selected::after {
+  content: '✓';
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 24px;
+  height: 24px;
+  background: #52c41a;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  box-shadow: 0 2px 8px rgba(82, 196, 26, 0.3);
+  animation: checkmarkAppear 0.3s ease-out;
+}
+
+.material-preview {
+  height: 120px;
+  position: relative;
+  background: #fafafa;
+  border-radius: 6px 6px 0 0;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.material-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.material-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  font-size: 48px;
+  color: #d9d9d9;
+}
+
+.material-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  color: white;
+  font-size: 24px;
+}
+
+.material-preview:hover .material-overlay {
+  opacity: 1;
+}
+
+.empty-materials {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 40px;
+  color: #8c8c8c;
+}
+
+.material-preview-modal {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.preview-info h4 {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.preview-info p {
+  margin: 4px 0;
+  font-size: 14px;
+  color: #595959;
+}
+
+/* 生成控制样式 */
+.generate-control {
+  background: white;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.generate-button-container {
+  margin-bottom: 24px;
+}
+
+.generate-button {
+  height: 60px;
+  font-size: 18px;
+  padding: 0 40px;
+  border-radius: 8px;
+}
+
+.progress-section {
+  margin-top: 24px;
+}
+
+.progress-text {
+  margin-top: 12px;
+  font-size: 14px;
+  color: #595959;
+}
+
+.generate-tips {
+  margin-top: 24px;
+  padding: 20px;
+  background: #f6f8fa;
+  border-radius: 8px;
+  text-align: left;
+}
+
+.generate-tips p {
+  margin: 0 0 12px 0;
+  font-weight: 500;
+  color: #262626;
+}
+
+.generate-tips ul {
+  margin: 0;
+  padding-left: 20px;
+  color: #595959;
+}
+
+.generated-result {
+  width: 100%;
+}
+
+.result-card {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.result-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.result-header h3 {
+  margin: 0 0 8px 0;
+  font-size: 24px;
+  color: #52c41a;
+}
+
+.result-header p {
+  margin: 0;
+  color: #595959;
+}
+
+.video-preview {
+  margin-bottom: 20px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.video-info {
+  margin-bottom: 24px;
+}
+
+.video-info h4 {
+  margin: 0 0 12px 0;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.video-details {
+  display: flex;
+  justify-content: space-around;
+  font-size: 14px;
+  color: #595959;
+}
+
+.result-actions {
+  display: flex;
+  justify-content: center;
+}
+
+/* 参数配置侧边栏样式 */
+.params-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.params-panel .ant-drawer-header {
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.params-panel .ant-drawer-body {
+  padding: 24px;
+}
+
+.params-section {
+  margin-bottom: 24px;
+}
+
+.params-section h4 {
+  margin: 0 0 16px 0;
+  font-size: 16px;
+  font-weight: 500;
+  color: #262626;
+}
+
+.params-actions {
+  position: sticky;
+  bottom: 0;
+  background: white;
+  padding: 16px 0;
+  border-top: 1px solid #f0f0f0;
+  margin-top: 24px;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .new-video-generator {
+    padding: 12px;
+  }
+  
+  .config-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .template-grid,
+  .material-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+  
+  .template-header {
+    flex-direction: column;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  
+  .library-header {
+    flex-direction: column;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  
+  .video-details {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .template-grid,
+  .material-grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  }
+  
+  .generate-button {
+    height: 50px;
+    font-size: 16px;
+    padding: 0 24px;
+  }
+}

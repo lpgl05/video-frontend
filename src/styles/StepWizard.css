@@ -1,0 +1,527 @@
+.step-wizard {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.step-content-wrapper {
+  min-height: auto;
+  max-height: none;
+  padding: 16px 0;
+  overflow: visible;
+}
+
+.step-content {
+  width: 100%;
+}
+
+/* 步骤区域包装器 */
+.step-section-wrapper {
+  border: 2px solid rgba(24, 144, 255, 0.1);
+  border-radius: 12px;
+  padding: 16px;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+/* 步骤头部 */
+.step-section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding-left: 0;
+}
+
+.step-number {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #1890ff 0%, #722ed1 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 16px;
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.3);
+}
+
+.step-section-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #262626;
+  background: linear-gradient(135deg, #262626 0%, #1890ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* 上传卡片样式 */
+.upload-card {
+  margin-bottom: 8px;
+  border: 1px solid rgba(24, 144, 255, 0.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+  transition: all 0.3s ease;
+}
+
+.upload-card:hover {
+  border-color: rgba(24, 144, 255, 0.15);
+  box-shadow: 0 4px 16px rgba(24, 144, 255, 0.08);
+  transform: translateY(-1px);
+}
+
+.upload-card .ant-card-head {
+  border-bottom: 1px solid rgba(24, 144, 255, 0.06);
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border-radius: 12px 12px 0 0;
+  padding: 8px 14px;
+}
+
+.upload-card .ant-card-body {
+  padding: 10px 14px;
+}
+
+/* 卡片标题样式 */
+.card-title-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.title-indicator {
+  width: 3px;
+  height: 16px;
+  border-radius: 2px;
+  background: linear-gradient(135deg, #1890ff 0%, #722ed1 100%);
+  flex-shrink: 0;
+}
+
+.card-title-wrapper span {
+  color: #262626;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.step-actions {
+  border-top: 1px solid #f0f0f0;
+  padding-top: 24px;
+  background: linear-gradient(135deg, #fafafa 0%, #ffffff 100%);
+  margin: 0 -24px -24px -24px;
+  padding: 24px;
+  border-radius: 0 0 8px 8px;
+}
+
+.step-actions .ant-btn {
+  height: 44px;
+  border-radius: 8px;
+  font-weight: 500;
+  padding: 0 24px;
+  transition: all 0.3s ease;
+}
+
+.step-actions .ant-btn-primary {
+  background: linear-gradient(135deg, #1890ff 0%, #722ed1 100%);
+  border: none;
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.3);
+  font-size: 16px;
+}
+
+.step-actions .ant-btn-primary:hover {
+  background: linear-gradient(135deg, #40a9ff 0%, #9254de 100%);
+  box-shadow: 0 6px 16px rgba(24, 144, 255, 0.4);
+  transform: translateY(-1px);
+}
+
+.step-actions .ant-btn-primary:active {
+  transform: translateY(0);
+}
+
+.step-actions .ant-btn:not(.ant-btn-primary) {
+  border: 1px solid rgba(24, 144, 255, 0.2);
+  background: rgba(255, 255, 255, 0.8);
+  color: #595959;
+}
+
+.step-actions .ant-btn:not(.ant-btn-primary):hover {
+  border-color: #1890ff;
+  color: #1890ff;
+  background: rgba(24, 144, 255, 0.04);
+}
+
+/* 现代步骤导航样式 */
+.modern-steps {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 32px;
+  padding: 20px 0;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border-radius: 12px;
+  border: 1px solid rgba(24, 144, 255, 0.08);
+}
+
+.step-item {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  position: relative;
+}
+
+.step-indicator {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 2;
+  position: relative;
+}
+
+.step-number {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  border: 2px solid #e8e8e8;
+  background: #ffffff;
+  color: #8c8c8c;
+}
+
+.step-item.completed .step-number {
+  background: linear-gradient(135deg, #52c41a 0%, #73d13d 100%);
+  border-color: #52c41a;
+  color: white;
+  box-shadow: 0 4px 12px rgba(82, 196, 26, 0.3);
+}
+
+.step-item.active .step-number {
+  background: linear-gradient(135deg, #1890ff 0%, #722ed1 100%);
+  border-color: #1890ff;
+  color: white;
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.3);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); box-shadow: 0 4px 12px rgba(24, 144, 255, 0.3); }
+  50% { transform: scale(1.05); box-shadow: 0 6px 16px rgba(24, 144, 255, 0.4); }
+  100% { transform: scale(1); box-shadow: 0 4px 12px rgba(24, 144, 255, 0.3); }
+}
+
+.step-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.step-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #262626;
+  margin: 0;
+}
+
+.step-item.active .step-title {
+  color: #1890ff;
+}
+
+.step-item.completed .step-title {
+  color: #52c41a;
+}
+
+.step-description {
+  font-size: 12px;
+  color: #8c8c8c;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.step-item.active .step-description {
+  color: #40a9ff;
+}
+
+.step-item.completed .step-description {
+  color: #73d13d;
+}
+
+.step-connector {
+  flex: 1;
+  height: 2px;
+  margin: 0 16px;
+  position: relative;
+  z-index: 1;
+}
+
+.connector-line {
+  width: 100%;
+  height: 2px;
+  background: #e8e8e8;
+  border-radius: 1px;
+  transition: all 0.3s ease;
+}
+
+.step-connector.completed .connector-line {
+  background: linear-gradient(135deg, #52c41a 0%, #73d13d 100%);
+  box-shadow: 0 1px 4px rgba(82, 196, 26, 0.2);
+}
+
+.section {
+  margin-bottom: 16px;
+}
+
+.section-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #262626;
+  display: flex;
+  align-items: center;
+}
+
+.section-title .anticon {
+  margin-right: 8px;
+  color: #1890ff;
+}
+
+.section-content {
+  background: #fff;
+  border: 1px solid #f0f0f0;
+  border-radius: 6px;
+  padding: 12px;
+}
+
+.upload-list {
+  margin-top: 12px;
+}
+
+.upload-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  border: 1px solid #f0f0f0;
+  border-radius: 6px;
+  margin-bottom: 6px;
+  background: #fafafa;
+  transition: all 0.3s;
+}
+
+.upload-item:hover {
+  background: #f0f8ff;
+  border-color: #1890ff;
+}
+
+.file-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.file-name {
+  font-weight: 500;
+  color: #262626;
+  margin-bottom: 4px;
+}
+
+.file-size {
+  font-size: 12px;
+  color: #8c8c8c;
+}
+
+.file-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.form-item {
+  margin-bottom: 16px;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #262626;
+}
+
+.action-buttons {
+  text-align: center;
+  padding: 24px;
+  background: #fafafa;
+  border-radius: 8px;
+  margin-top: 24px;
+}
+
+/* 步骤操作按钮样式 */
+.step-actions .ant-btn-primary {
+  background: linear-gradient(135deg, #1890ff 0%, #722ed1 100%) !important;
+  border: none !important;
+  color: white !important;
+  font-weight: 500;
+  border-radius: 8px;
+  height: 40px;
+  padding: 0 24px;
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.3);
+  transition: all 0.3s ease;
+}
+
+.step-actions .ant-btn-primary:hover {
+  background: linear-gradient(135deg, #40a9ff 0%, #9254de 100%) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(24, 144, 255, 0.4);
+  color: white !important;
+}
+
+.step-actions .ant-btn-primary:active {
+  background: linear-gradient(135deg, #096dd9 0%, #531dab 100%) !important;
+  transform: translateY(0);
+  color: white !important;
+}
+
+.step-actions .ant-btn-primary:focus {
+  color: white !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.3);
+}
+
+.step-actions .ant-btn-primary.ant-btn-loading {
+  color: white !important;
+}
+
+.step-actions .ant-btn-primary span {
+  color: white !important;
+}
+
+.step-actions .ant-btn {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.step-actions .ant-btn-default {
+  border: 1px solid #d9d9d9;
+  color: #595959;
+  background: white;
+  border-radius: 8px;
+  height: 40px;
+  padding: 0 24px;
+  transition: all 0.3s ease;
+}
+
+.step-actions .ant-btn-default:hover {
+  border-color: #1890ff;
+  color: #1890ff;
+  background: rgba(24, 144, 255, 0.04);
+}
+
+/* AI文案生成进度条样式 - 强制设置宽度 */
+.ai-generation-progress {
+  width: 100% !important;
+  margin-top: 16px;
+  box-sizing: border-box;
+}
+.ai-generation-progress > div {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.ai-generation-progress .ant-progress {
+  width: 100% !important;
+  margin: 0 !important;
+}
+
+.ai-generation-progress .ant-progress-line {
+  width: 100% !important;
+  display: block !important;
+  max-width: 100% !important;
+}
+
+.ai-generation-progress .ant-progress-outer {
+  width: 100% !important;
+  min-width: 100% !important;
+  max-width: 100% !important;
+  display: flex !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.ai-generation-progress .ant-progress-inner {
+  width: 100% !important;
+  min-width: 100% !important;
+  max-width: 100% !important;
+  border-radius: 5px;
+  background-color: rgba(24, 144, 255, 0.1);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+  height: 10px !important;
+}
+
+.ai-generation-progress .ant-progress-bg {
+  border-radius: 5px;
+  transition: width 0.3s ease;
+  box-shadow: 0 2px 4px rgba(24, 144, 255, 0.2);
+  height: 10px !important;
+}
+
+/* 确保父容器也是100%宽度 */
+.form-item .ai-generation-progress {
+  width: 100% !important;
+}
+
+/* 额外强制设置宽度 */
+.section-content .ai-generation-progress {
+  width: 100% !important;
+}
+
+.upload-card .ai-generation-progress {
+  width: 100% !important;
+}
+
+/* 调试：确保能看到实际宽度 */
+.ai-generation-progress {
+  background: rgba(0, 255, 0, 0.05) !important; /* 临时绿色背景用于调试 */
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .modern-steps {
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px;
+  }
+  
+  .step-item {
+    flex-direction: column;
+    text-align: center;
+    width: 100%;
+  }
+  
+  .step-connector {
+    transform: rotate(90deg);
+    width: 2px;
+    height: 20px;
+    margin: 8px 0;
+  }
+  
+  .step-info {
+    align-items: center;
+    text-align: center;
+  }
+  
+  .step-title {
+    font-size: 14px;
+  }
+  
+  .step-description {
+    font-size: 11px;
+  }
+  
+  .step-number {
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+  }
+}
