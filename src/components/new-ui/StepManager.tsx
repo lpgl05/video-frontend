@@ -108,6 +108,8 @@ const StepManager: React.FC<StepManagerProps> = ({
   
   const [currentTask, setCurrentTask] = useState<any>(null);
   const [pollingInterval, setPollingInterval] = useState<NodeJS.Timeout | null>(null);
+  // 防止重复弹出“视频生成完成！”的提示
+  const [hasShownCompleteToast, setHasShownCompleteToast] = useState<boolean>(false);
   const [previewVisible, setPreviewVisible] = useState(false);
   const [previewVideo, setPreviewVideo] = useState<string>('');
   const [totalGenerationTime, setTotalGenerationTime] = useState<number>(0);
@@ -233,7 +235,12 @@ const StepManager: React.FC<StepManagerProps> = ({
       // 3. 进入第三步
       setCurrentStep(2);
       
-      // 4. 开始轮询任务状态
+      // 4. 开始轮询任务状态（启动前清理旧的轮询，并重置完成提示状态）
+      if (pollingInterval) {
+        clearInterval(pollingInterval);
+        setPollingInterval(null);
+      }
+      setHasShownCompleteToast(false);
       startPolling(task.id);
       
       message.success('视频生成任务已启动，请稍候...');
@@ -298,8 +305,9 @@ const StepManager: React.FC<StepManagerProps> = ({
             const totalVideos = scripts.filter(s => s.selected).length;
             if (newVideos.length >= totalVideos) {
               // 只在第一次完成时显示toast，避免重复提示
-              if (generatedVideos.length < totalVideos) {
-                message.success('视频生成完成！');
+              if (!hasShownCompleteToast) {
+                message.success({ key: 'gen_done', content: '视频生成完成！', duration: 3 });
+                setHasShownCompleteToast(true);
               }
               
               // 添加到历史记录
@@ -322,6 +330,10 @@ const StepManager: React.FC<StepManagerProps> = ({
           setGenerationProgress(100);
           clearInterval(interval);
           setPollingInterval(null);
+          if (!hasShownCompleteToast) {
+            message.success({ key: 'gen_done', content: '视频生成完成！', duration: 3 });
+            setHasShownCompleteToast(true);
+          }
         }
         
         // 如果任务失败
@@ -466,28 +478,58 @@ const StepManager: React.FC<StepManagerProps> = ({
                 📹 视频生成进度
               </h3>
               
-              {/* 总耗时统计 */}
+              {/* 顶部信息条（合并完成提示与总耗时） */}
               {generationStartTime && (
                 <div style={{
                   marginBottom: '20px',
-                  padding: '12px 16px',
+                  padding: '6px 16px',
                   backgroundColor: '#f0f5ff',
                   border: '1px solid #d6e4ff',
                   borderRadius: '8px',
-                  textAlign: 'center'
+                  position: 'relative',
+                  height: '36px',
+                  overflow: 'hidden'
                 }}>
-                  <div style={{ 
-                    fontSize: '16px', 
-                    fontWeight: '500',
-                    color: '#1d39c4'
-                  }}>
-                    🕒 总耗时: {formatTime(totalGenerationTime)}
-                  </div>
+                  {generationProgress === 100 && generatedVideos.length > 0 ? (
+                    <>
+                      <div style={{
+                        position: 'absolute',
+                        left: '50%',
+                        top: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        color: '#1677ff',
+                        fontWeight: 600
+                      }}>
+                        🎆 所有视频已生成，您可以开始预览和下载
+                      </div>
+                      <div style={{
+                        position: 'absolute',
+                        right: '12px',
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        color: '#595959'
+                      }}>
+                        总耗时: {formatTime(totalGenerationTime)}
+                      </div>
+                    </>
+                  ) : (
+                    <div style={{
+                      position: 'absolute',
+                      right: '12px',
+                      top: '50%',
+                      transform: 'translateY(-50%)',
+                      color: '#1d39c4',
+                      fontWeight: 500
+                    }}>
+                      🕒 总耗时: {formatTime(totalGenerationTime)}
+                    </div>
+                  )}
                 </div>
               )}
 
               {/* 进度条 */}
               <div style={{ marginBottom: '30px' }}>
+                {/* 完成提示已并入顶部信息条，这里不再重复显示 */}
                 <div style={{ 
                   display: 'flex', 
                   justifyContent: 'space-between', 
@@ -535,22 +577,7 @@ const StepManager: React.FC<StepManagerProps> = ({
                     position: 'relative',
                     overflow: 'hidden'
                   }}>
-                    {/* 完成状态指示器 */}
-                    <div style={{
-                      position: 'absolute',
-                      top: '16px',
-                      right: '16px',
-                      width: '32px',
-                      height: '32px',
-                      borderRadius: '50%',
-                      backgroundColor: '#52c41a',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      boxShadow: '0 2px 8px rgba(82, 196, 26, 0.3)'
-                    }}>
-                      <span style={{ color: 'white', fontSize: '16px', fontWeight: 'bold' }}>✓</span>
-                    </div>
+                    {/* 移除右上角圆形元素（原勾选/分享等圆形图标） */}
 
                     {/* 视频信息 */}
                     <div style={{ marginBottom: '16px' }}>
@@ -561,7 +588,7 @@ const StepManager: React.FC<StepManagerProps> = ({
                         color: '#262626',
                         lineHeight: '1.4'
                       }}>
-                        {video.name}
+                        {(projectName ? `${projectName}_${String(index + 1).padStart(2, '0')}` : video.name)}
                       </h4>
                       <div style={{ fontSize: '12px', color: '#8c8c8c', lineHeight: '1.5' }}>
                         <div>生成时间: {video.createdAt ? new Date(video.createdAt).toLocaleString() : '刚刚'}</div>
@@ -685,7 +712,7 @@ const StepManager: React.FC<StepManagerProps> = ({
                           e.currentTarget.style.boxShadow = '0 2px 4px rgba(24, 144, 255, 0.2)';
                         }}
                       >
-                        🎥 预览视频
+                        预览视频
                       </button>
                       <button 
                         onClick={(e) => {
@@ -693,7 +720,8 @@ const StepManager: React.FC<StepManagerProps> = ({
                           if (video.url) {
                             const link = document.createElement('a');
                             const downloadUrl = video.url.includes("oss-proxy") ? video.url.replace(":8000", ":9999") + "&download=true" : video.url; link.href = downloadUrl;
-                            link.download = `${video.name}.mp4`;
+                            const displayName = projectName ? `${projectName}_${String(index + 1).padStart(2, '0')}` : (video.name || `video_${index + 1}`);
+                            link.download = `${displayName}.mp4`;
                             document.body.appendChild(link);
                             link.click();
                             document.body.removeChild(link);
@@ -723,30 +751,24 @@ const StepManager: React.FC<StepManagerProps> = ({
                           e.currentTarget.style.boxShadow = '0 2px 4px rgba(82, 196, 26, 0.2)';
                         }}
                       >
-                        📥 下载视频
+                        下载视频
                       </button>
                     </div>
                   </div>
                 ))}
               </div>
 
-              {/* 完成状态 */}
+              {/* 完成状态（去掉外框，仅保留简洁提示或完全隐藏外框） */}
               {generationProgress === 100 && generatedVideos.length > 0 && (
                 <div style={{
                   textAlign: 'center',
-                  padding: '20px',
-                  backgroundColor: '#f6ffed',
-                  border: '1px solid #b7eb8f',
-                  borderRadius: '8px',
-                  marginBottom: '20px'
+                  padding: 0,
+                  backgroundColor: 'transparent',
+                  border: 'none',
+                  borderRadius: 0,
+                  marginBottom: 0
                 }}>
-                  <div style={{ fontSize: '24px', marginBottom: '8px' }}>🎉</div>
-                  <h3 style={{ margin: 0, color: '#52c41a', fontSize: '16px' }}>
-                    所有视频生成完成！
-                  </h3>
-                  <p style={{ margin: '4px 0 0 0', color: '#666', fontSize: '14px' }}>
-                    共生成 {generatedVideos.length} 个视频，您可以预览和下载
-                  </p>
+                  <div style={{ fontSize: '0px', height: 0, overflow: 'hidden' }}></div>
                 </div>
               )}
             </div>

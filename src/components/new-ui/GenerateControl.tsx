@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, Progress, Card, Space, message } from 'antd';
-import { PlayCircleOutlined, DownloadOutlined, ShareAltOutlined } from '@ant-design/icons';
+import { PlayCircleOutlined, DownloadOutlined } from '@ant-design/icons';
 
 interface GeneratedVideo {
   id: string;
@@ -140,13 +140,7 @@ const GenerateControl: React.FC<GenerateControlProps> = ({
                 >
                   下载视频
                 </Button>
-                <Button
-                  icon={<ShareAltOutlined />}
-                  onClick={() => handleShare(generatedVideo)}
-                  size="large"
-                >
-                  分享视频
-                </Button>
+                {/* 分享功能暂时隐藏 */}
               </Space>
             </div>
           </Card>

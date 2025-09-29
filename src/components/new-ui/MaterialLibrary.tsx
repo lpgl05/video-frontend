@@ -56,16 +56,22 @@ const MaterialLibrary: React.FC<MaterialLibraryProps> = ({
       if (response.ok) {
         const data = await response.json();
         // 转换后端数据格式为前端Material接口格式
-        const formattedMaterials = data.map((item: any) => ({
-          id: item.id,
-          name: item.name,
-          url: item.url,
-          type: item.type,
-          uploadDate: item.uploadedAt,
-          size: item.size,
-          duration: item.duration,
-          thumbnail: item.thumbnail
-        }));
+        const formattedMaterials = data.map((item: any) => {
+          const url: string = item.url || '';
+          const fallbackName = url ? decodeURIComponent(url.split('/').pop() || '') : '';
+          const name: string = item.name || fallbackName || '未命名素材';
+          const uploadedAt: string = item.uploadedAt || item.createdAt || item.uploadDate || '';
+          return {
+            id: item.id,
+            name,
+            url,
+            type: item.type,
+            uploadDate: uploadedAt,
+            size: item.size,
+            duration: item.duration,
+            thumbnail: item.thumbnail
+          } as Material;
+        });
         setMaterials(formattedMaterials);
         console.log('成功获取素材列表:', formattedMaterials.length, '个素材');
         
@@ -152,6 +158,18 @@ const MaterialLibrary: React.FC<MaterialLibraryProps> = ({
         if (result.success) {
           // 重新加载素材列表以获取最新的素材
           await loadMaterials();
+          // 上传后默认选中：优先使用返回的id，否则按文件名匹配
+          try {
+            if (result.id) {
+              onMaterialSelect(type, String(result.id), true);
+            } else {
+              const uploadedName = file.name;
+              const sameName = materials.find(m => m.type === type && (m.name === uploadedName || (m.url && decodeURIComponent(m.url.split('/').pop() || '') === uploadedName)));
+              if (sameName) {
+                onMaterialSelect(type, sameName.id, true);
+              }
+            }
+          } catch (_) {}
           message.success('素材上传成功！');
         } else {
           message.error(result.error || '上传失败，请重试');
@@ -234,8 +252,9 @@ const MaterialLibrary: React.FC<MaterialLibraryProps> = ({
       <Card
         hoverable
         className={`material-card ${isSelected ? 'selected' : ''}`}
+        onClick={() => onMaterialSelect(material.type, material.id, !isSelected)}
         cover={
-          <div className="material-preview" onClick={() => handlePreview(material)}>
+          <div className="material-preview" onClick={(e) => { e.stopPropagation(); handlePreview(material); }}>
             {material.type === 'poster' && material.url ? (
               // 海报显示缩略图
               <img 
@@ -337,7 +356,12 @@ const MaterialLibrary: React.FC<MaterialLibraryProps> = ({
           title={material.name}
           description={
             <div>
-              <div>上传时间：{new Date(material.uploadDate).toLocaleDateString()}</div>
+              <div>
+                上传时间：{isNaN(Date.parse(material.uploadDate)) ? '-' : new Date(material.uploadDate).toLocaleString()}
+              </div>
+              {typeof material.size === 'number' && (
+                <div>大小：{(material.size / 1024 / 1024).toFixed(2)}MB</div>
+              )}
               {material.duration && <div>时长：{material.duration}秒</div>}
             </div>
           }
@@ -355,11 +379,29 @@ const MaterialLibrary: React.FC<MaterialLibraryProps> = ({
     
     // 获取当前类型的上传进度
     const currentUploads = Object.keys(uploadingFiles).filter(key => key.startsWith(type));
+    const allIds = typeMaterials.map(m => m.id);
+    const selectedIds = selectedMaterials[type + 's' as keyof typeof selectedMaterials] as string[];
+    const isAllSelected = allIds.length > 0 && allIds.every(id => selectedIds.includes(id));
+    const toggleSelectAll = () => {
+      if (isAllSelected) {
+        allIds.forEach(id => onMaterialSelect(type, id, false));
+      } else {
+        allIds.forEach(id => onMaterialSelect(type, id, true));
+      }
+    };
     
     return (
       <div className="material-section">
         <div className="section-header">
           <h4>{title}</h4>
+          <Space>
+            <Button 
+              size="small"
+              onClick={toggleSelectAll}
+              style={{ height: '28px', fontSize: '12px' }}
+            >
+              {isAllSelected ? '取消全选' : '全选'}
+            </Button>
           <Upload
             multiple
             accept={type === 'video' ? 'video/*' : type === 'audio' ? 'audio/*' : 'image/*'}
@@ -381,6 +423,7 @@ const MaterialLibrary: React.FC<MaterialLibraryProps> = ({
               上传{title}
             </Button>
           </Upload>
+          </Space>
         </div>
         
         {/* 上传进度条 */}
