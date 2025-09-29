@@ -216,7 +216,7 @@ const VideoMixer: React.FC = () => {
         style,
       }
 
-      const savedProject = await saveProject(project, voice, {}, undefined)
+      const savedProject = await saveProject(project, voice, 1.0, {}, undefined)
 
       // 2. 立即启动生成任务（不等待完成）
       const task = await startGeneration(savedProject.id)
@@ -387,10 +387,10 @@ const VideoMixer: React.FC = () => {
             // 恢复项目配置并查看结果
             const { project, task } = historyItem
             setProjectName(project.name)
-            setVideos(project.videos)
-            setAudios(project.audios)
-            setPosters(project.posters)
-            setScripts(project.scripts)
+            setVideos(project.videos || [])
+            setAudios(project.audios || [])
+            setPosters(project.posters || [])
+            setScripts(project.scripts || [])
             setDuration(project.duration)
             setVideoCount(project.videoCount)
             setVoice(project.voice)
@@ -422,10 +422,10 @@ const VideoMixer: React.FC = () => {
             // 恢复项目配置并查看结果
             const { project, task } = historyItem
             setProjectName(project.name)
-            setVideos(project.videos)
-            setAudios(project.audios)
-            setPosters(project.posters)
-            setScripts(project.scripts)
+            setVideos(project.videos || [])
+            setAudios(project.audios || [])
+            setPosters(project.posters || [])
+            setScripts(project.scripts || [])
             setDuration(project.duration)
             setVideoCount(project.videoCount)
             setVoice(project.voice)

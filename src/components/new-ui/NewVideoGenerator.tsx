@@ -477,7 +477,7 @@ const NewVideoGenerator: React.FC = () => {
       };
 
       setGeneratedVideo(mockVideo);
-      message.success('视频生成完成！');
+      // message.success('视频生成完成！'); // 已注释，避免重复提示
     } catch (error) {
       message.error('视频生成失败，请重试');
     } finally {

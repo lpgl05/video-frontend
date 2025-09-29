@@ -127,7 +127,7 @@ const VideoMixer: React.FC = () => {
       completedAt: task.status === 'completed' ? updatedAtStr : undefined,
       videoCount: project.videoCount,
       duration: project.duration,
-      videos: task.result?.videos ? task.generatedVideos : undefined,
+      videos: task.result?.videos ? task.generatedVideos : [],
       project,
       task
     }
@@ -216,7 +216,7 @@ const VideoMixer: React.FC = () => {
         style,
       }
 
-      const savedProject = await saveProject(project, voice, {}, undefined)
+      const savedProject = await saveProject(project, voice, 1.0, {}, undefined)
 
       // 2. 立即启动生成任务（不等待完成）
       const task = await startGeneration(savedProject.id)

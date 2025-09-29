@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { Progress, Button, message, Modal } from 'antd'
-import { PlayCircleOutlined, DownloadOutlined, EyeOutlined } from '@ant-design/icons'
+import { Progress, Button, message, Modal, Tooltip } from 'antd'
+import { PlayCircleOutlined, DownloadOutlined, ShareAltOutlined } from '@ant-design/icons'
 import type { GenerationTask } from '../types'
 import ReactPlayer from 'react-player'
 
@@ -78,13 +78,25 @@ const GenerationResult: React.FC<GenerationResultProps> = ({ task, onReset, onNe
   }
 
   const handlePreview = (url: string) => {
-    setPreviewVideo(url)
+    // 检查url是否为有效字符串
+    if (!url || typeof url !== "string") {
+      console.error("Invalid URL:", url);
+      message.error("视频URL无效，无法预览");
+      return;
+    }
+    setPreviewVideo(url.replace(":8000", ":9999"))
     setPreviewVisible(true)
   }
 
   const handleDownload = (url: string, index: number) => {
+    // 检查url是否为有效字符串
+    if (!url || typeof url !== "string") {
+      console.error("Invalid URL:", url);
+      message.error("视频URL无效，无法下载");
+      return;
+    }
     const link = document.createElement('a')
-    link.href = url
+    link.href = url.includes("oss-proxy") ? url.replace(":8000", ":9999") + "&download=true" : url
     link.download = `混剪视频_${index + 1}.mp4`
     document.body.appendChild(link)
     link.click()
@@ -92,11 +104,59 @@ const GenerationResult: React.FC<GenerationResultProps> = ({ task, onReset, onNe
     message.success('开始下载')
   }
 
+  // 批量下载所有视频
+  const handleBatchDownload = () => {
+    if (!task?.result?.videos || task.result.videos.length === 0) {
+      message.warning('没有可下载的视频');
+      return;
+    }
+
+    task.result.videos.forEach((video, index) => {
+      setTimeout(() => {
+        if (video.url) {
+          const link = document.createElement('a');
+          const downloadUrl = video.url.includes('oss-proxy') ? 
+            video.url.replace(':8000', ':9999') + '&download=true' : 
+            video.url;
+          link.href = downloadUrl;
+          link.download = `混剪视频_${index + 1}.mp4`;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }
+      }, index * 500);
+    });
+
+    message.success(`开始批量下载 ${task.result.videos.length} 个视频文件`);
+  };
+
+  const handleShare = (url: string, index: number) => {
+    if (navigator.share) {
+      navigator.share({
+        title: `混剪视频 ${index + 1}`,
+        text: '查看我制作的精彩视频',
+        url: url
+      }).catch(() => {
+        // 如果分享失败，复制链接到剪贴板
+        navigator.clipboard.writeText(url).then(() => {
+          message.success('视频链接已复制到剪贴板')
+        })
+      })
+    } else {
+      // 不支持原生分享，复制链接到剪贴板
+      navigator.clipboard.writeText(url).then(() => {
+        message.success('视频链接已复制到剪贴板')
+      }).catch(() => {
+        message.error('复制失败，请手动复制链接')
+      })
+    }
+  }
+
   // 格式化耗时显示
-  const formatDuration = (durationMinutes?: number) => {
-    if (!durationMinutes) return null
+  const formatDuration = (durationSeconds?: number) => {
+    if (!durationSeconds) return null
     
-    const totalSeconds = Math.round(durationMinutes * 60)
+    const totalSeconds = Math.round(durationSeconds)
     const minutes = Math.floor(totalSeconds / 60)
     const seconds = totalSeconds % 60
     
@@ -109,7 +169,7 @@ const GenerationResult: React.FC<GenerationResultProps> = ({ task, onReset, onNe
 
   const getStatusText = (status: GenerationTask['status']) => {
     switch (status) {
-      case 'pending':
+      case 'queued':
         return '等待中'
       case 'processing':
         return '处理中'
@@ -124,7 +184,7 @@ const GenerationResult: React.FC<GenerationResultProps> = ({ task, onReset, onNe
 
   const getStatusColor = (status: GenerationTask['status']) => {
     switch (status) {
-      case 'pending':
+      case 'queued':
         return '#faad14'
       case 'processing':
         return '#1890ff'
@@ -196,11 +256,33 @@ const GenerationResult: React.FC<GenerationResultProps> = ({ task, onReset, onNe
             </div>
           )}
 
-          {task.status === 'completed' && task.result && (
+          {task.status === 'completed' && task.result && task.result.videos && task.result.videos.length > 0 && (
             <div>
               <div className="result-grid">
                 {task.result.videos.map((video, index) => (
-                  <div key={index} className="result-item">
+                  <div key={index} className="result-item" style={{ position: 'relative' }}>
+                    {/* 右上角分享按钮 - 已隐藏 */}
+                    {/* <Tooltip title="分享视频">
+                      <Button
+                        type="primary"
+                        shape="circle"
+                        icon={<ShareAltOutlined />}
+                        onClick={() => handleShare(video.url, index)}
+                        style={{
+                          position: 'absolute',
+                          top: '12px',
+                          right: '12px',
+                          zIndex: 10,
+                          width: '36px',
+                          height: '36px',
+                          backgroundColor: '#1890ff',
+                          border: '2px solid #ffffff',
+                          boxShadow: '0 4px 12px rgba(24, 144, 255, 0.4)',
+                          color: '#ffffff'
+                        }}
+                      />
+                    </Tooltip> */}
+                    
                     <div style={{ 
                       width: '100%', 
                       height: '200px', 
@@ -208,34 +290,73 @@ const GenerationResult: React.FC<GenerationResultProps> = ({ task, onReset, onNe
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      cursor: 'pointer'
+                      cursor: 'pointer',
+                      position: 'relative',
+                      overflow: 'hidden'
                     }} onClick={() => handlePreview(video.url)}>
                       <PlayCircleOutlined style={{ fontSize: '48px', color: '#1890ff' }} />
+                      <div style={{
+                        position: 'absolute',
+                        bottom: '8px',
+                        left: '8px',
+                        right: '8px',
+                        background: 'rgba(0, 0, 0, 0.6)',
+                        color: 'white',
+                        padding: '4px 8px',
+                        borderRadius: '4px',
+                        fontSize: '12px',
+                        textAlign: 'center'
+                      }}>
+                        点击预览视频
+                      </div>
                     </div>
                     <div className="result-info">
                       <div className="result-title">混剪视频 {index + 1}</div>
                       <div className="result-meta">
                         生成时间: {new Date(task.updatedAt).toLocaleString()}
                       </div>
-                      {task.processing_time && (
+                      {video.processing_time && (
                         <div className="result-meta" style={{ color: '#1890ff', fontWeight: '500' }}>
-                          耗时: {formatDuration(task.processing_time)}
+                          耗时: {formatDuration(video.processing_time)}
                         </div>
                       )}
-                      <div style={{ marginTop: '8px', display: 'flex', gap: '8px' }}>
+                      <div style={{ 
+                        marginTop: '16px', 
+                        display: 'flex', 
+                        gap: '12px',
+                        justifyContent: 'center'
+                      }}>
                         <Button
-                          size="small"
-                          icon={<EyeOutlined />}
+                          type="primary"
+                          size="large"
                           onClick={() => handlePreview(video.url)}
+                          style={{
+                            flex: 1,
+                            height: '40px',
+                            borderRadius: '8px',
+                            fontWeight: '600',
+                            fontSize: '16px',
+                            backgroundColor: '#1890ff',
+                            borderColor: '#1890ff'
+                          }}
                         >
-                          预览
+                          🎥 预览视频
                         </Button>
                         <Button
-                          size="small"
-                          icon={<DownloadOutlined />}
-                          onClick={() => handleDownload(video, index)}
+                          size="large"
+                          onClick={() => handleDownload(video.url, index)}
+                          style={{
+                            flex: 1,
+                            height: '40px',
+                            borderRadius: '8px',
+                            fontWeight: '600',
+                            fontSize: '16px',
+                            borderColor: '#52c41a',
+                            color: '#52c41a',
+                            backgroundColor: '#f6ffed'
+                          }}
                         >
-                          下载
+                          📥 下载视频
                         </Button>
                       </div>
                     </div>
@@ -258,6 +379,13 @@ const GenerationResult: React.FC<GenerationResultProps> = ({ task, onReset, onNe
                   style={{ minWidth: '120px' }}
                 >
                   查看原配置
+                </Button>
+                <Button 
+                  icon={<DownloadOutlined />}
+                  onClick={handleBatchDownload}
+                  style={{ minWidth: '120px' }}
+                >
+                  批量下载
                 </Button>
                 <Button 
                   onClick={onNewCreation}
@@ -291,4 +419,4 @@ const GenerationResult: React.FC<GenerationResultProps> = ({ task, onReset, onNe
   )
 }
 
-export default GenerationResult 
+export default GenerationResult

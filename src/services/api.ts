@@ -422,6 +422,7 @@ export const generateScripts = async (
 export const saveProject = async (
   config: Omit<ProjectConfig, 'id' | 'createdAt' | 'updatedAt'>, 
   voiceType?: string,
+  voiceSpeed?: number,
   templateParams?: any,
   templateId?: string,
   portraitMode?: string
@@ -433,6 +434,12 @@ export const saveProject = async (
   if (voiceType) {
     body.voice = voiceType;
     console.log('🎙️ saveProject: 设置voice字段为:', voiceType);
+  }
+  
+  // 🚀 将voiceSpeed赋值给voiceSpeed字段
+  if (voiceSpeed !== undefined) {
+    body.voiceSpeed = voiceSpeed;
+    console.log('🎙️ saveProject: 设置voiceSpeed字段为:', voiceSpeed);
   }
   
   // 🎨 添加模板参数

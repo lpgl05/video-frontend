@@ -44,6 +44,9 @@ export type DurationOption = '15s' | '30s' | '30-60s';
 // 语音朗读选项
 export type VoiceOption = 'male' | 'female';
 
+// 语速选项
+export type VoiceSpeedOption = number; // 0.5 - 2.0
+
 // 字体样式配置
 export interface FontStyle {
   color: string;
@@ -137,6 +140,7 @@ export interface ProjectConfig {
   duration: DurationOption;
   videoCount: number;
   voice: VoiceOption;
+  voiceSpeed: VoiceSpeedOption;
   style: StyleConfig;
   createdAt: Date;
   updatedAt: Date;
@@ -152,7 +156,10 @@ export interface GenerationTask {
   status: 'queued' | 'processing' | 'completed' | 'failed';  // 确保包含 queued 状态
   progress: number;
   result?: {
-    videos: string[];
+    videos: Array<{
+      url: string;
+      processing_time?: number;
+    }>;
     previewUrl?: string;
   };
   error?: string;

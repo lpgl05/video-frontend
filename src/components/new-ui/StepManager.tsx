@@ -220,9 +220,9 @@ const StepManager: React.FC<StepManagerProps> = ({
         style: style
       };
       
-      console.log('🎙️ StepManager生成项目配置:', { voiceType, voice: voiceType || 'female' });
+      console.log('🎙️ StepManager生成项目配置:', { voiceType, voice: voiceType || 'female', voiceSpeed: templateParams?.voiceSpeed });
       
-      const savedProject = await saveProject(project, voiceType, templateParams, selectedTemplate?.id);
+      const savedProject = await saveProject(project, voiceType, templateParams?.voiceSpeed, templateParams, selectedTemplate?.id);
       console.log('✅ 项目配置已保存:', savedProject);
 
       // 2. 启动生成任务
@@ -297,7 +297,10 @@ const StepManager: React.FC<StepManagerProps> = ({
             // 检查是否所有视频都完成了
             const totalVideos = scripts.filter(s => s.selected).length;
             if (newVideos.length >= totalVideos) {
-              message.success('视频生成完成！');
+              // 只在第一次完成时显示toast，避免重复提示
+              if (generatedVideos.length < totalVideos) {
+                message.success('视频生成完成！');
+              }
               
               // 添加到历史记录
               if (onAddToHistory) {
@@ -661,33 +664,35 @@ const StepManager: React.FC<StepManagerProps> = ({
                         style={{
                           flex: 1,
                           padding: '10px 16px',
-                          border: '1px solid #1890ff',
+                          border: '2px solid #1890ff',
                           borderRadius: '6px',
-                          backgroundColor: '#1890ff',
-                          color: 'white',
+                          backgroundColor: '#ffffff',
+                          color: '#1890ff',
                           cursor: 'pointer',
                           fontSize: '14px',
-                          fontWeight: '500',
+                          fontWeight: '600',
                           transition: 'all 0.3s ease',
                           boxShadow: '0 2px 4px rgba(24, 144, 255, 0.2)'
                         }}
                         onMouseEnter={(e) => {
-                          e.currentTarget.style.backgroundColor = '#40a9ff';
+                          e.currentTarget.style.backgroundColor = '#1890ff';
+                          e.currentTarget.style.color = '#ffffff';
                           e.currentTarget.style.boxShadow = '0 4px 8px rgba(24, 144, 255, 0.3)';
                         }}
                         onMouseLeave={(e) => {
-                          e.currentTarget.style.backgroundColor = '#1890ff';
+                          e.currentTarget.style.backgroundColor = '#ffffff';
+                          e.currentTarget.style.color = '#1890ff';
                           e.currentTarget.style.boxShadow = '0 2px 4px rgba(24, 144, 255, 0.2)';
                         }}
                       >
-                        📺 预览
+                        🎥 预览视频
                       </button>
                       <button 
                         onClick={(e) => {
                           e.stopPropagation();
                           if (video.url) {
                             const link = document.createElement('a');
-                            link.href = video.url;
+                            const downloadUrl = video.url.includes("oss-proxy") ? video.url.replace(":8000", ":9999") + "&download=true" : video.url; link.href = downloadUrl;
                             link.download = `${video.name}.mp4`;
                             document.body.appendChild(link);
                             link.click();
@@ -697,26 +702,28 @@ const StepManager: React.FC<StepManagerProps> = ({
                         style={{
                           flex: 1,
                           padding: '10px 16px',
-                          border: '1px solid #52c41a',
+                          border: '2px solid #52c41a',
                           borderRadius: '6px',
-                          backgroundColor: '#52c41a',
-                          color: 'white',
+                          backgroundColor: '#ffffff',
+                          color: '#52c41a',
                           cursor: 'pointer',
                           fontSize: '14px',
-                          fontWeight: '500',
+                          fontWeight: '600',
                           transition: 'all 0.3s ease',
                           boxShadow: '0 2px 4px rgba(82, 196, 26, 0.2)'
                         }}
                         onMouseEnter={(e) => {
-                          e.currentTarget.style.backgroundColor = '#73d13d';
+                          e.currentTarget.style.backgroundColor = '#52c41a';
+                          e.currentTarget.style.color = '#ffffff';
                           e.currentTarget.style.boxShadow = '0 4px 8px rgba(82, 196, 26, 0.3)';
                         }}
                         onMouseLeave={(e) => {
-                          e.currentTarget.style.backgroundColor = '#52c41a';
+                          e.currentTarget.style.backgroundColor = '#ffffff';
+                          e.currentTarget.style.color = '#52c41a';
                           e.currentTarget.style.boxShadow = '0 2px 4px rgba(82, 196, 26, 0.2)';
                         }}
                       >
-                        📥 下载
+                        📥 下载视频
                       </button>
                     </div>
                   </div>
@@ -818,7 +825,7 @@ const StepManager: React.FC<StepManagerProps> = ({
                     setTimeout(() => {
                       if (video.url) {
                         const link = document.createElement('a');
-                        link.href = video.url;
+                        const downloadUrl = video.url.includes("oss-proxy") ? video.url.replace(":8000", ":9999") + "&download=true" : video.url; link.href = downloadUrl;
                         link.download = `${video.name}.mp4`;
                         document.body.appendChild(link);
                         link.click();
