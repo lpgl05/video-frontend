@@ -9,6 +9,12 @@
   width: 100% !important; /* 确保宽度为100% */
 }
 
+/* 渐变主题变量 */
+:root {
+  --gradient-start: #1890ff;
+  --gradient-end: #722ed1;
+}
+
 /* 强制覆盖所有可能的背景样式 */
 .new-video-generator,
 .new-video-generator *,
@@ -78,8 +84,22 @@
   border: 1px solid rgba(24, 144, 255, 0.1) !important;
 }
 
+/* 让描述换行显示在第二行 */
+.ant-steps-item-description {
+  display: block !important;
+  white-space: normal !important;
+  line-height: 1.4 !important;
+  margin-top: 2px !important;
+}
+
+/* 标题单独一行并微调间距 */
+.ant-steps-item-title {
+  display: block !important;
+  margin-bottom: 2px !important;
+}
+
 .ant-steps-item-icon {
-  background: linear-gradient(135deg, #1890ff 0%, #722ed1 100%) !important; /* 渐变背景 */
+  background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%) !important; /* 渐变背景 */
   border-color: transparent !important;
   color: white !important; /* 白色文字 */
   font-weight: bold !important;
@@ -92,7 +112,7 @@
 }
 
 .ant-steps-item-process .ant-steps-item-icon {
-  background: linear-gradient(135deg, #1890ff 0%, #40a9ff 100%) !important; /* 当前步骤蓝色渐变 */
+  background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%) !important; /* 当前步骤渐变 */
   border-color: transparent !important;
   color: white !important;
   /* box-shadow: 0 6px 20px rgba(24, 144, 255, 0.4) !important; */
@@ -107,10 +127,42 @@
 }
 
 .ant-steps-item-finish .ant-steps-item-icon {
-  background: linear-gradient(135deg, #52c41a 0%, #73d13d 100%) !important; /* 已完成步骤绿色渐变 */
+  background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%) !important; /* 完成也统一渐变 */
   border-color: transparent !important;
   color: white !important;
   /* box-shadow: 0 4px 16px rgba(82, 196, 26, 0.3) !important; */
+}
+
+/* 完成状态下的对号颜色置白，增强可读性 */
+.ant-steps-item-finish .ant-steps-item-icon .ant-steps-icon {
+  color: #fff !important;
+}
+
+/* 步骤标题与描述颜色（当前/已完成）：蓝紫纯色并加粗前两步标题 */
+.ant-steps-item-process .ant-steps-item-title,
+.ant-steps-item-finish .ant-steps-item-title,
+.ant-steps-item-process .ant-steps-item-description,
+.ant-steps-item-finish .ant-steps-item-description {
+  /* 优先提供可见的纯色作为回退，避免透明导致看不见 */
+  color: #3f66f9 !important;
+  display: inline-block; /* 保证渐变裁剪有效 */
+}
+
+/* 暂时强制使用纯色以避免 -webkit-text-fill 造成文本透明看不见 */
+.ant-steps-item-process .ant-steps-item-title,
+.ant-steps-item-finish .ant-steps-item-title,
+.ant-steps-item-process .ant-steps-item-description,
+.ant-steps-item-finish .ant-steps-item-description {
+  background: none !important;
+  -webkit-background-clip: initial !important;
+  -webkit-text-fill-color: currentColor !important;
+  color: #3f66f9 !important;
+}
+
+/* 第1、2个步骤标题加粗 */
+.ant-steps-item:nth-child(1) .ant-steps-item-title,
+.ant-steps-item:nth-child(2) .ant-steps-item-title {
+  font-weight: 700 !important;
 }
 
 /* 素材卡片精致样式优化 - 减少嵌套 */
@@ -331,8 +383,8 @@
 
 /* 模板选择右上角按钮样式优化 */
 .template-selection .ant-btn {
-  background: #1890ff !important;
-  border-color: #1890ff !important;
+  background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end)) !important;
+  border-color: transparent !important;
   color: white !important;
   box-shadow: 0 2px 8px rgba(24, 144, 255, 0.3) !important;
   font-weight: 500 !important;
@@ -340,8 +392,8 @@
 }
 
 .template-selection .ant-btn:hover {
-  background: #40a9ff !important;
-  border-color: #40a9ff !important;
+  background: linear-gradient(135deg, #40a9ff, var(--gradient-end)) !important;
+  border-color: transparent !important;
   box-shadow: 0 4px 12px rgba(24, 144, 255, 0.4) !important;
   transform: translateY(-1px) !important;
 }
@@ -634,10 +686,7 @@
 }
 
 .material-placeholder .material-name {
-  font-size: 12px;
-  text-align: center;
-  padding: 0 8px;
-  word-break: break-all;
+  display: none;
 }
 
 .empty-templates {
@@ -704,6 +753,29 @@
   margin-bottom: 16px;
 }
 
+/* 页面常规按钮统一为渐变主题（危险/文本/链接按钮除外） */
+.new-video-generator .ant-btn-primary:not(.ant-btn-dangerous) {
+  background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end)) !important;
+  border: none !important;
+  color: #fff !important;
+}
+.new-video-generator .ant-btn-primary:not(.ant-btn-dangerous):hover {
+  filter: brightness(1.05);
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.35) !important;
+}
+
+.new-video-generator .ant-btn-default:not(.ant-btn-dangerous):not(.ant-btn-link) {
+  background: linear-gradient(#fff, #fff) padding-box,
+              linear-gradient(135deg, var(--gradient-start), var(--gradient-end)) border-box !important;
+  border: 1px solid transparent !important;
+  color: var(--gradient-start) !important;
+}
+.new-video-generator .ant-btn-default:not(.ant-btn-dangerous):not(.ant-btn-link):hover {
+  background: linear-gradient(135deg, rgba(24, 144, 255, 0.08), rgba(114, 46, 209, 0.08)) padding-box,
+              linear-gradient(135deg, var(--gradient-start), var(--gradient-end)) border-box !important;
+  color: var(--gradient-start) !important;
+}
+
 .library-header {
   display: flex;
   justify-content: space-between;
@@ -765,9 +837,10 @@
 }
 
 .material-card.selected {
-  border-color: #52c41a;
-  background: linear-gradient(135deg, #f6ffed 0%, #e6f7ff 100%);
-  box-shadow: 0 4px 12px rgba(82, 196, 26, 0.3);
+  border-color: transparent;
+  background: linear-gradient(#ffffff, #ffffff) padding-box,
+              linear-gradient(135deg, var(--gradient-start), var(--gradient-end)) border-box !important;
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.2);
   transform: translateY(-2px);
   position: relative;
 }
@@ -779,15 +852,15 @@
   right: 8px;
   width: 24px;
   height: 24px;
-  background: #52c41a;
+  background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: #fff;
   font-size: 14px;
   font-weight: bold;
-  box-shadow: 0 2px 8px rgba(82, 196, 26, 0.3);
+  box-shadow: 0 2px 8px rgba(24, 144, 255, 0.25);
   animation: checkmarkAppear 0.3s ease-out;
 }
 
@@ -878,6 +951,8 @@
   font-size: 18px;
   padding: 0 40px;
   border-radius: 8px;
+  background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end)) !important;
+  border: none !important;
 }
 
 .progress-section {

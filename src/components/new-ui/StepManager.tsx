@@ -702,9 +702,9 @@ const StepManager: React.FC<StepManagerProps> = ({
                           boxShadow: '0 2px 4px rgba(24, 144, 255, 0.2)'
                         }}
                         onMouseEnter={(e) => {
-                          e.currentTarget.style.backgroundColor = '#1890ff';
-                          e.currentTarget.style.color = '#ffffff';
-                          e.currentTarget.style.boxShadow = '0 4px 8px rgba(24, 144, 255, 0.3)';
+                          e.currentTarget.style.backgroundColor = 'rgba(24, 144, 255, 0.08)';
+                          e.currentTarget.style.color = '#1890ff';
+                          e.currentTarget.style.boxShadow = '0 4px 8px rgba(24, 144, 255, 0.15)';
                         }}
                         onMouseLeave={(e) => {
                           e.currentTarget.style.backgroundColor = '#ffffff';
@@ -741,9 +741,9 @@ const StepManager: React.FC<StepManagerProps> = ({
                           boxShadow: '0 2px 4px rgba(82, 196, 26, 0.2)'
                         }}
                         onMouseEnter={(e) => {
-                          e.currentTarget.style.backgroundColor = '#52c41a';
-                          e.currentTarget.style.color = '#ffffff';
-                          e.currentTarget.style.boxShadow = '0 4px 8px rgba(82, 196, 26, 0.3)';
+                          e.currentTarget.style.backgroundColor = 'rgba(82, 196, 26, 0.08)';
+                          e.currentTarget.style.color = '#52c41a';
+                          e.currentTarget.style.boxShadow = '0 4px 8px rgba(82, 196, 26, 0.15)';
                         }}
                         onMouseLeave={(e) => {
                           e.currentTarget.style.backgroundColor = '#ffffff';

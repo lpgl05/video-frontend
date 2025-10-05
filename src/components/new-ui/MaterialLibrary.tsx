@@ -247,6 +247,8 @@ const MaterialLibrary: React.FC<MaterialLibraryProps> = ({
 
   const MaterialCard: React.FC<{ material: Material }> = ({ material }) => {
     const isSelected = selectedMaterials[material.type + 's' as keyof typeof selectedMaterials].includes(material.id);
+    const uploadDateValid = !isNaN(Date.parse(material.uploadDate));
+    const formattedUpload = uploadDateValid ? new Date(material.uploadDate).toLocaleString() : '-';
     
     return (
       <Card
@@ -275,7 +277,6 @@ const MaterialLibrary: React.FC<MaterialLibraryProps> = ({
                     parent.innerHTML = `
                       <div class="material-placeholder">
                         <div class="material-icon">🖼️</div>
-                        <div class="material-name">${material.name}</div>
                       </div>
                       <div class="material-overlay">
                         <svg viewBox="0 0 1024 1024" width="16" height="16" fill="currentColor">
@@ -294,7 +295,6 @@ const MaterialLibrary: React.FC<MaterialLibraryProps> = ({
                   {material.type === 'audio' && '🎵'}
                   {material.type === 'poster' && '🖼️'}
                 </div>
-                <div className="material-name">{material.name}</div>
               </div>
             )}
             <div className="material-overlay">
@@ -302,70 +302,49 @@ const MaterialLibrary: React.FC<MaterialLibraryProps> = ({
             </div>
           </div>
         }
-        actions={[
-          <div 
-            key="select"
-            style={{
-              width: '20px',
-              height: '20px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer',
-              transition: 'all 0.3s ease',
-              margin: '0 auto'
-            }}
-            onClick={() => onMaterialSelect(material.type, material.id, !isSelected)}
-          >
-            {isSelected ? (
-              <CheckOutlined 
-                style={{ 
-                  color: '#52c41a', 
-                  fontSize: '18px',
-                  fontWeight: 'bold'
-                }} 
-              />
-            ) : (
-              <div 
-                style={{
-                  width: '16px',
-                  height: '16px',
-                  border: '2px solid #d9d9d9',
-                  borderRadius: '2px',
-                  backgroundColor: 'white'
-                }}
-              />
-            )}
-          </div>,
-          <Button 
-            key="delete"
-            type="text"
-            danger
-            size="small"
-            icon={<DeleteOutlined />}
-            onClick={() => handleDelete(material.id)}
-            style={{ 
-              padding: '4px 8px',
-              height: '24px',
-              fontSize: '12px'
-            }}
-          />
-        ]}
       >
         <Card.Meta 
           title={material.name}
           description={
             <div>
-              <div>
-                上传时间：{isNaN(Date.parse(material.uploadDate)) ? '-' : new Date(material.uploadDate).toLocaleString()}
-              </div>
-              {typeof material.size === 'number' && (
+              {formattedUpload !== '-' && (
+                <div>上传时间：{formattedUpload}</div>
+              )}
+              {typeof material.size === 'number' && material.size > 0 && (
                 <div>大小：{(material.size / 1024 / 1024).toFixed(2)}MB</div>
               )}
-              {material.duration && <div>时长：{material.duration}秒</div>}
+              {material.duration ? <div>时长：{material.duration}秒</div> : null}
             </div>
           }
         />
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginTop: '12px'
+          }}
+        >
+          <div 
+            onClick={() => onMaterialSelect(material.type, material.id, !isSelected)}
+            style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}
+          >
+            {isSelected ? (
+              <CheckOutlined style={{ color: '#52c41a', fontSize: '16px' }} />
+            ) : (
+              <div style={{ width: '16px', height: '16px', border: '2px solid #d9d9d9', borderRadius: '2px', backgroundColor: 'white' }} />
+            )}
+            <span style={{ fontSize: '12px', color: '#595959' }}>{isSelected ? '已选择' : '选择'}</span>
+          </div>
+          <Button 
+            type="text"
+            danger
+            size="small"
+            icon={<DeleteOutlined />}
+            onClick={(e) => { e.stopPropagation(); handleDelete(material.id); }}
+            style={{ padding: '0 6px', height: '24px', fontSize: '12px' }}
+          >删除</Button>
+        </div>
       </Card>
     );
   };
@@ -504,58 +483,6 @@ const MaterialLibrary: React.FC<MaterialLibraryProps> = ({
         />
       </div>
 
-      {/* 手机预览功能 */}
-      <div style={{ marginTop: '24px' }}>
-        <Card 
-          title="📱 手机预览效果" 
-          size="small"
-          style={{ 
-            border: '2px solid #1890ff',
-            backgroundColor: '#f6ffed'
-          }}
-        >
-          <div style={{ textAlign: 'center', padding: '20px' }}>
-            {selectedPoster ? (
-              <div>
-                <span style={{ color: '#52c41a', fontSize: '14px', display: 'block', marginBottom: '12px' }}>
-                  ✅ 已选择海报素材：{selectedPoster.name}
-                </span>
-                <Button 
-                  type="primary" 
-                  icon={<EyeOutlined />}
-                  onClick={() => setStylePreviewVisible(true)}
-                  style={{
-                    background: 'linear-gradient(135deg, #1890ff 0%, #722ed1 100%)',
-                    borderColor: 'transparent',
-                    boxShadow: '0 4px 12px rgba(24, 144, 255, 0.3)'
-                  }}
-                >
-                  📱 预览效果
-                </Button>
-              </div>
-            ) : (
-              <div>
-                <span style={{ color: '#8c8c8c', fontSize: '14px', display: 'block', marginBottom: '12px' }}>
-                  📋 预览字体、标题、字号、颜色等样式效果
-                </span>
-                <Button 
-                  type="primary" 
-                  icon={<EyeOutlined />}
-                  onClick={() => setStylePreviewVisible(true)}
-                  style={{
-                    background: 'linear-gradient(135deg, #1890ff 0%, #722ed1 100%)',
-                    borderColor: 'transparent',
-                    boxShadow: '0 4px 12px rgba(24, 144, 255, 0.3)'
-                  }}
-                >
-                  📱 预览效果
-                </Button>
-              </div>
-            )}
-          </div>
-        </Card>
-      </div>
-
       {/* 预览模态框 */}
       <Modal
         title="素材预览"
@@ -596,41 +523,29 @@ const MaterialLibrary: React.FC<MaterialLibraryProps> = ({
           </div>
         )}
       </Modal>
-
-      {/* 样式预览弹窗 */}
-      <Modal
-        title="📱 手机预览效果"
-        open={stylePreviewVisible}
-        onCancel={() => setStylePreviewVisible(false)}
-        footer={null}
-        width={400}
-        centered
-        style={{ top: 20 }}
-      >
-        <div style={{ textAlign: 'center' }}>
-          <div style={{ marginBottom: '16px', fontSize: '12px', color: '#666' }}>
-            预览效果 (270 × 480)
+      {/* 样式预览：改为内嵌展示，无需按钮 */}
+      <div style={{ marginTop: '24px' }}>
+        <Card title="📱 手机预览效果" size="small">
+          <div style={{ textAlign: 'center', padding: '12px 0' }}>
+            <div style={{ marginBottom: '8px', fontSize: '12px', color: '#666' }}>预览效果 (270 × 480)</div>
+            <StylePreview
+              titleStyle={currentStyleConfig?.title || {
+                mainTitle: { text: '示例标题', fontSize: 64, color: '#ffffff', fontFamily: 'SourceHanSansCN-Heavy' },
+                subTitle: { text: '示例副标题', fontSize: 48, color: '#ffff00', fontFamily: 'SourceHanSansCN-Heavy' },
+                spacing: 11
+              }}
+              subtitleStyle={currentStyleConfig?.subtitle || {
+                fontSize: 40,
+                color: '#ffffff',
+                fontFamily: 'SourceHanSansCN-Heavy'
+              }}
+              posterUrl={selectedPoster?.url}
+              width={270}
+              height={480}
+            />
           </div>
-          <StylePreview
-            titleStyle={currentStyleConfig?.title || {
-              mainTitle: { text: '示例标题', fontSize: 64, color: '#ffffff', fontFamily: 'SourceHanSansCN-Heavy' },
-              subTitle: { text: '示例副标题', fontSize: 48, color: '#ffff00', fontFamily: 'SourceHanSansCN-Heavy' },
-              spacing: 11
-            }}
-            subtitleStyle={currentStyleConfig?.subtitle || {
-              fontSize: 40,
-              color: '#ffffff',
-              fontFamily: 'SourceHanSansCN-Heavy'
-            }}
-            posterUrl={selectedPoster?.url}
-            width={270}
-            height={480}
-          />
-          <div style={{ marginTop: '12px', fontSize: '12px', color: '#999' }}>
-            字体已按比例缩放至预览尺寸
-          </div>
-        </div>
-      </Modal>
+        </Card>
+      </div>
     </div>
   );
 };
