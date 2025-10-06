@@ -58,7 +58,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
       </div>
       
       <div className="login-content">
-        <Card className="login-card" bordered={false}>
+        <Card className="login-card" variant="filled">
           <div className="login-header">
             <div className="logo-section">
               <div className="logo-icon">

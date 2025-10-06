@@ -446,12 +446,13 @@ export const saveProject = async (
   if (templateParams) {
     body.templateParams = templateParams;
     // true表示竖屏模板，false表示横屏模板
-    body.portraitMode = portraitMode === 'template2' ? true : false; // 根据选择设置portraitMode
+    // body.portraitMode = portraitMode === 'template2' ? true : false; // 根据选择设置portraitMode
     console.log('🎨 saveProject: 设置模板参数:', templateParams);
   }
   
   if (templateId) {
     body.templateId = templateId;
+    body.portraitMode = templateId === 'template1' ? false : true;
     console.log('🎯 saveProject: 设置模板ID:', templateId);
   }
   

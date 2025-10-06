@@ -12,7 +12,7 @@ export default defineConfig({
   },
   server: {
     host: '0.0.0.0',
-    port: 4000,
+    port: 5555,
     proxy: {
       '/api': {
         target: 'http://39.96.187.7:9999', // 测试环境后端地址

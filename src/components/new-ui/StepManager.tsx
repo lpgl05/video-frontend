@@ -624,7 +624,8 @@ const StepManager: React.FC<StepManagerProps> = ({
                     }}
                     onClick={() => {
                       if (video.url) {
-                        window.open(video.url, '_blank');
+                        setPreviewVideo(video.url.replace(":8000", ":9999"));
+                        setPreviewVisible(true);
                       }
                     }}
                     onMouseEnter={(e) => {
@@ -684,7 +685,7 @@ const StepManager: React.FC<StepManagerProps> = ({
                         onClick={(e) => {
                           e.stopPropagation();
                           if (video.url) {
-                            setPreviewVideo(video.url);
+                            setPreviewVideo(video.url.replace(":8000", ":9999"));
                             setPreviewVisible(true);
                           }
                         }}
