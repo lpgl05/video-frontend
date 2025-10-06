@@ -27,15 +27,19 @@ interface HistoryPageProps {
 const HistoryPage: React.FC<HistoryPageProps> = ({ projectHistory = [], onViewProject }) => {
   // 批量一键下载所有视频
   const handleBatchDownload = (historyItem: ProjectHistory) => {
-    if (!historyItem.videos || historyItem.videos.length === 0) {
+    // 优先从task.result.videos获取视频URL，这是实际的下载地址
+    const videos = historyItem.task?.result?.videos || [];
+    
+    if (!videos || videos.length === 0) {
       message.warning('该记录没有可下载的视频');
       return;
     }
 
-    historyItem.videos.forEach((video, index) => {
+    videos.forEach((video, index) => {
       setTimeout(() => {
         if (video.url) {
           const link = document.createElement('a');
+          // 修复下载URL：确保正确的端口替换和下载参数
           const downloadUrl = video.url.includes('oss-proxy') ? 
             video.url.replace(':8000', ':9999') + '&download=true' : 
             video.url;
@@ -48,7 +52,7 @@ const HistoryPage: React.FC<HistoryPageProps> = ({ projectHistory = [], onViewPr
       }, index * 500);
     });
 
-    message.success(`开始批量下载 ${historyItem.videos.length} 个视频文件`);
+    message.success(`开始批量下载 ${videos.length} 个视频文件`);
   };
 
   const getStatusColor = (status: string) => {

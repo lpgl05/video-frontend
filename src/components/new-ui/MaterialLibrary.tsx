@@ -361,6 +361,8 @@ const MaterialLibrary: React.FC<MaterialLibraryProps> = ({
     const allIds = typeMaterials.map(m => m.id);
     const selectedIds = selectedMaterials[type + 's' as keyof typeof selectedMaterials] as string[];
     const isAllSelected = allIds.length > 0 && allIds.every(id => selectedIds.includes(id));
+    const hasSelected = selectedIds.length > 0;
+    
     const toggleSelectAll = () => {
       if (isAllSelected) {
         allIds.forEach(id => onMaterialSelect(type, id, false));
@@ -368,19 +370,37 @@ const MaterialLibrary: React.FC<MaterialLibraryProps> = ({
         allIds.forEach(id => onMaterialSelect(type, id, true));
       }
     };
+
+    const clearSelection = () => {
+      selectedIds.forEach(id => onMaterialSelect(type, id, false));
+    };
     
     return (
       <div className="material-section">
         <div className="section-header">
           <h4>{title}</h4>
           <Space>
-            <Button 
-              size="small"
-              onClick={toggleSelectAll}
-              style={{ height: '28px', fontSize: '12px' }}
-            >
-              {isAllSelected ? '取消全选' : '全选'}
-            </Button>
+            {type === 'poster' ? (
+              // 海报类型：显示清除选择按钮（当有选中时）
+              hasSelected && (
+                <Button 
+                  size="small"
+                  onClick={clearSelection}
+                  style={{ height: '28px', fontSize: '12px' }}
+                >
+                  清除选择
+                </Button>
+              )
+            ) : (
+              // 视频和音频类型：显示全选/取消全选按钮
+              <Button 
+                size="small"
+                onClick={toggleSelectAll}
+                style={{ height: '28px', fontSize: '12px' }}
+              >
+                {isAllSelected ? '取消全选' : '全选'}
+              </Button>
+            )}
           <Upload
             multiple
             accept={type === 'video' ? 'video/*' : type === 'audio' ? 'audio/*' : 'image/*'}

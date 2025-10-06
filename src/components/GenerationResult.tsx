@@ -8,9 +8,10 @@ interface GenerationResultProps {
   task: GenerationTask | null
   onReset: () => void
   onNewCreation: () => void
+  projectName?: string
 }
 
-const GenerationResult: React.FC<GenerationResultProps> = ({ task, onReset, onNewCreation }) => {
+const GenerationResult: React.FC<GenerationResultProps> = ({ task, onReset, onNewCreation, projectName }) => {
   const [previewVisible, setPreviewVisible] = useState(false)
   const [previewVideo, setPreviewVideo] = useState<string>('')
   const [simulatedProgress, setSimulatedProgress] = useState(0)
@@ -97,7 +98,7 @@ const GenerationResult: React.FC<GenerationResultProps> = ({ task, onReset, onNe
     }
     const link = document.createElement('a')
     link.href = url.includes("oss-proxy") ? url.replace(":8000", ":9999") + "&download=true" : url
-    link.download = `混剪视频_${index + 1}.mp4`
+    link.download = `${projectName ? `${projectName}_${String(index + 1).padStart(2, '0')}` : `混剪视频_${index + 1}`}.mp4`
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
@@ -119,7 +120,7 @@ const GenerationResult: React.FC<GenerationResultProps> = ({ task, onReset, onNe
             video.url.replace(':8000', ':9999') + '&download=true' : 
             video.url;
           link.href = downloadUrl;
-          link.download = `混剪视频_${index + 1}.mp4`;
+          link.download = `${projectName ? `${projectName}_${String(index + 1).padStart(2, '0')}` : `混剪视频_${index + 1}`}.mp4`;
           document.body.appendChild(link);
           link.click();
           document.body.removeChild(link);
@@ -133,7 +134,7 @@ const GenerationResult: React.FC<GenerationResultProps> = ({ task, onReset, onNe
   const handleShare = (url: string, index: number) => {
     if (navigator.share) {
       navigator.share({
-        title: `混剪视频 ${index + 1}`,
+        title: `${projectName ? `${projectName}_${String(index + 1).padStart(2, '0')}` : `混剪视频 ${index + 1}`}`,
         text: '查看我制作的精彩视频',
         url: url
       }).catch(() => {
@@ -311,7 +312,9 @@ const GenerationResult: React.FC<GenerationResultProps> = ({ task, onReset, onNe
                       </div>
                     </div>
                     <div className="result-info">
-                      <div className="result-title">混剪视频 {index + 1}</div>
+                      <div className="result-title">
+                        {projectName ? `${projectName}_${String(index + 1).padStart(2, '0')}` : `混剪视频 ${index + 1}`}
+                      </div>
                       <div className="result-meta">
                         生成时间: {new Date(task.updatedAt).toLocaleString()}
                       </div>

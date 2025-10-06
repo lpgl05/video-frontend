@@ -454,6 +454,7 @@ const VideoMixer: React.FC = () => {
       return (
         <GenerationResult 
           task={currentTask}
+          projectName={projectName}
           onReset={() => setCurrentTask(null)}
           onNewCreation={handleNewCreation}
         />
@@ -519,8 +520,8 @@ const VideoMixer: React.FC = () => {
         onRetry={handleRetry}
       />
       
-      {/* 开发者工具 */}
-      <DevTools />
+      {/* 开发者工具 - 已隐藏 */}
+      {/* <DevTools /> */}
       
       {/* 调试面板 - 已禁用 */}
       {/* <DebugPanel 

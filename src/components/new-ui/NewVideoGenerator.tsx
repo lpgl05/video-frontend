@@ -403,10 +403,20 @@ const NewVideoGenerator: React.FC = () => {
       const newSelected = { ...prev };
       const key = (type + 's') as keyof typeof prev;
       
-      if (isSelected) {
-        newSelected[key] = [...newSelected[key], materialId];
+      if (type === 'poster') {
+        // 海报使用单选逻辑
+        if (isSelected) {
+          newSelected[key] = [materialId]; // 只保留当前选中的海报
+        } else {
+          newSelected[key] = []; // 取消选择
+        }
       } else {
-        newSelected[key] = newSelected[key].filter(id => id !== materialId);
+        // 视频和音频保持多选逻辑
+        if (isSelected) {
+          newSelected[key] = [...newSelected[key], materialId];
+        } else {
+          newSelected[key] = newSelected[key].filter(id => id !== materialId);
+        }
       }
       
       return newSelected;
