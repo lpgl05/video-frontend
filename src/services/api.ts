@@ -450,6 +450,8 @@ export const saveProject = async (
     console.log('🎨 saveProject: 设置模板参数:', templateParams);
   }
   
+  // 默认竖屏
+  body.portraitMode = true;
   if (templateId) {
     body.templateId = templateId;
     body.portraitMode = templateId === 'template1' ? false : true;
