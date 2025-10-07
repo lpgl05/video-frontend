@@ -796,6 +796,105 @@
   gap: 24px;
 }
 
+/* 巨型素材卡片 */
+.giant-material-card {
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid #f0f0f0;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.giant-material-card:hover {
+  box-shadow: 0 8px 32px rgba(24, 144, 255, 0.12);
+  border-color: rgba(24, 144, 255, 0.2);
+}
+
+.giant-material-card .ant-card-head {
+  background: linear-gradient(135deg, rgba(24, 144, 255, 0.05), rgba(114, 46, 209, 0.05));
+  border-bottom: 1px solid #f0f0f0;
+  padding: 16px 24px;
+}
+
+.giant-material-card .ant-card-head-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #262626;
+}
+
+.giant-material-card .ant-card-body {
+  padding: 24px;
+}
+
+/* 卡片头部操作按钮组样式 */
+.card-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.card-header-actions .ant-input-search {
+  border-radius: 6px;
+  height: 32px;
+}
+
+.card-header-actions .ant-input-search .ant-input {
+  height: 32px;
+  line-height: 32px;
+}
+
+.card-header-actions .ant-input-search .ant-input-search-button {
+  height: 32px;
+}
+
+.card-header-actions .ant-input-search:hover {
+  border-color: var(--gradient-start);
+}
+
+.card-header-actions .ant-input-search:focus {
+  border-color: var(--gradient-start);
+  box-shadow: 0 0 0 2px rgba(24,144,255,0.2);
+}
+
+.card-header-actions .ant-btn {
+  border-radius: 6px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  height: 32px;
+  line-height: 30px;
+  padding: 0 15px;
+}
+
+.card-header-actions .ant-btn:hover {
+  border-color: var(--gradient-start);
+  color: var(--gradient-start);
+  transform: translateY(-1px);
+}
+
+.card-header-actions .ant-btn-primary {
+  background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+  border: none;
+}
+
+.card-header-actions .ant-btn-primary:hover {
+  background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+  opacity: 0.9;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(24,144,255,0.3);
+}
+
+.card-header-actions .ant-btn-danger {
+  background: #ff4d4f;
+  border-color: #ff4d4f;
+  color: #fff;
+}
+
+.card-header-actions .ant-btn-danger:hover {
+  background: #ff7875;
+  border-color: #ff7875;
+  color: #fff;
+}
+
 .material-section {
   display: flex;
   flex-direction: column;
@@ -817,23 +916,123 @@
 
 .material-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 20px;
+  align-items: start;
+}
+
+/* 上传加号矩形卡片 - 更精致版本 */
+.upload-tile {
+  border: 3px dashed #d9d9d9;
+  border-radius: 16px;
+  height: 200px;
+  min-width: 240px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+.upload-tile::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(24,144,255,0.05), rgba(114,46,209,0.05));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.upload-tile .plus {
+  font-size: 40px;
+  color: #8c8c8c;
+  line-height: 1;
+  font-weight: 200;
+  transition: all 0.4s ease;
+  position: relative;
+  z-index: 1;
+}
+.upload-tile .hint {
+  margin-top: 16px;
+  font-size: 14px;
+  color: #8c8c8c;
+  font-weight: 500;
+  transition: all 0.4s ease;
+  position: relative;
+  z-index: 1;
+}
+.upload-tile:hover {
+  border-color: var(--gradient-start);
+  background: linear-gradient(135deg, rgba(24,144,255,0.08), rgba(114,46,209,0.08));
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 12px 32px rgba(24,144,255,0.2);
+}
+.upload-tile:hover::before {
+  opacity: 1;
+}
+.upload-tile:hover .plus {
+  color: var(--gradient-start);
+  transform: scale(1.15) rotate(90deg);
+}
+.upload-tile:hover .hint {
+  color: var(--gradient-start);
+  transform: translateY(-2px);
+}
+
+/* 卡片悬停动效，统一主题色高亮 */
+.material-card:hover {
+  border-color: var(--gradient-start);
+  box-shadow: 0 6px 18px rgba(24,144,255,0.15);
+  transform: translateY(-2px);
+}
+
+/* 素材分区标题样式 */
+.material-section h4 {
+  color: #262626;
+  font-weight: 600;
+  margin: 0 0 16px 0;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+/* 分区操作按钮组样式 */
+.material-section .ant-space {
+  flex-wrap: wrap;
+  gap: 8px !important;
+}
+
+/* 搜索框样式优化 */
+.material-section .ant-input-search {
+  border-radius: 6px;
+}
+
+.material-section .ant-input-search:hover {
+  border-color: var(--gradient-start);
+}
+
+.material-section .ant-input-search:focus {
+  border-color: var(--gradient-start);
+  box-shadow: 0 0 0 2px rgba(24,144,255,0.2);
 }
 
 .material-card {
-  border: 2px solid #f0f0f0;
-  border-radius: 12px;
+  border: 1px solid #f0f0f0;
+  border-radius: 14px;
   transition: all 0.3s ease;
   overflow: hidden;
   background: white;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
 .material-card:hover {
-  border-color: #1890ff;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.15);
+  border-color: var(--gradient-start);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(24, 144, 255, 0.15);
 }
 
 .material-card.selected {

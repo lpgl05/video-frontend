@@ -399,7 +399,9 @@ const NewVideoGenerator: React.FC = () => {
 
   // 素材选择处理
   const handleMaterialSelect = (type: string, materialId: string, isSelected: boolean) => {
+    console.log(`📥 handleMaterialSelect收到: type=${type}, materialId=${materialId}, isSelected=${isSelected}`);
     setSelectedMaterials(prev => {
+      console.log(`📦 当前selectedMaterials:`, prev);
       const newSelected = { ...prev };
       const key = (type + 's') as keyof typeof prev;
       
@@ -419,6 +421,7 @@ const NewVideoGenerator: React.FC = () => {
         }
       }
       
+      console.log(`✅ 更新后的selectedMaterials.${key}:`, newSelected[key]);
       return newSelected;
     });
   };
@@ -500,6 +503,8 @@ const NewVideoGenerator: React.FC = () => {
     selectedMaterials.videos.length > 0 && 
     content.trim().length > 0 && 
     !isGenerating;
+
+  console.log('DEBUG NewVideoGenerator allMaterials:', allMaterials);
 
   return (
     <div className="new-video-generator" style={{ 

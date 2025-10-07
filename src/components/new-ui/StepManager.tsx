@@ -149,6 +149,9 @@ const StepManager: React.FC<StepManagerProps> = ({
         console.error('素材数据不可用');
         return [];
       }
+      
+      console.log(`DEBUG getMaterialData: type=${type}, ids=`, ids);
+      console.log(`DEBUG getMaterialData: allMaterials.${type}=`, allMaterials[type as keyof typeof allMaterials]);
 
       const materialMap = {
         videos: allMaterials.videos,
@@ -158,9 +161,23 @@ const StepManager: React.FC<StepManagerProps> = ({
 
       const materials = materialMap[type as keyof typeof materialMap] || [];
       
+      console.log(`DEBUG getMaterialData: materials from ${type}=`, materials);
+      
+      // 🔍 调试：打印第一个素材的结构和ID
+      if (materials.length > 0) {
+        console.log(`DEBUG 第一个素材对象:`, materials[0]);
+        console.log(`DEBUG 第一个素材ID类型:`, typeof materials[0].id, '值:', materials[0].id);
+      }
+      if (ids.length > 0) {
+        console.log(`DEBUG 查找的第一个ID类型:`, typeof ids[0], '值:', ids[0]);
+      }
+      
       return ids.map(id => {
         // 从真实素材数据中查找对应的素材
-        const material = materials.find(m => m.id === id);
+        const material = materials.find(m => {
+          console.log(`🔍 比较: m.id=${m.id}(${typeof m.id}) === id=${id}(${typeof id}) = ${m.id === id}`);
+          return m.id === id || String(m.id) === String(id);
+        });
         if (material) {
           // 使用真实的素材数据
           return {
@@ -195,12 +212,37 @@ const StepManager: React.FC<StepManagerProps> = ({
       // 1. 保存项目配置
       const selectedScripts = scripts.filter(s => s.selected);
       
+      console.log('DEBUG handleGenerateAndNext: selectedMaterials=', selectedMaterials);
+      console.log('DEBUG handleGenerateAndNext: allMaterials=', allMaterials);
+      
+      // ✅ 验证是否选择了素材
+      if (!selectedMaterials.videos || selectedMaterials.videos.length === 0) {
+        message.error('请至少选择一个视频素材！');
+        setIsGenerating(false);
+        return;
+      }
+      
+      if (!selectedScripts || selectedScripts.length === 0) {
+        message.error('请至少选择一个文案！');
+        setIsGenerating(false);
+        return;
+      }
+      
       // 获取完整的素材数据
       const [videos, audios, posters] = await Promise.all([
         getMaterialData('videos', selectedMaterials.videos),
         getMaterialData('audios', selectedMaterials.audios),
         getMaterialData('posters', selectedMaterials.posters)
       ]);
+      
+      console.log('🎬 获取到的素材数据: videos=', videos, 'audios=', audios, 'posters=', posters);
+      
+      // ✅ 再次验证获取到的素材数据
+      if (!videos || videos.length === 0) {
+        message.error('未能获取到有效的视频素材数据，请重新选择！');
+        setIsGenerating(false);
+        return;
+      }
 
       let style = localStorage.getItem(`videoConfig_${selectedTemplate.id}`)
       style = JSON.parse(style);
