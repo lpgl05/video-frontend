@@ -450,45 +450,53 @@ export const saveProject = async (
     console.log('🎨 saveProject: 设置模板参数:', templateParams);
   }
   
-  // 默认竖屏
+  // ✅ 修复：所有模板都输出9:16格式
   body.portraitMode = true;
   if (templateId) {
     body.templateId = templateId;
-    body.portraitMode = templateId === 'template1' ? false : true;
-    console.log('🎯 saveProject: 设置模板ID:', templateId);
+    // 统一设置为true，确保横版和竖版都输出9:16格式
+    body.portraitMode = true;
+    console.log('🎯 saveProject: 设置模板ID:', templateId, 'portraitMode:', body.portraitMode);
   }
   
-  // 获取样式配置，确保符合StyleConfig模型要求
-  let style: any = null;
-  const styleString = localStorage.getItem(`videoConfig_${body.selectedTemplate?.id || 'default'}`)
-  if (styleString) {
-    try {
-      style = JSON.parse(styleString);
-    } catch (e) {
-      console.warn('解析style配置失败，使用默认配置:', e);
-      style = null;
-    }
-  }
-  
-  // 如果style为null或格式不正确，使用默认的StyleConfig格式
-  if (!style || !style.title || !style.subtitle) {
-    style = {
-      title: {
-        text: "默认标题",
-        fontSize: 24,
-        color: "#ffffff",
-        position: "top"
-      },
-      subtitle: {
-        text: "默认副标题",
-        fontSize: 18,
-        color: "#ffffff",
-        position: "bottom"
+  // ✅ 优先使用传入的style配置，只有在没有时才从localStorage读取
+  if (!body.style || !body.style.title || !body.style.subtitle) {
+    console.log('⚠️ saveProject: 传入的style无效，尝试从localStorage读取');
+    let style: any = null;
+    const styleString = localStorage.getItem(`videoConfig_${body.selectedTemplate?.id || 'default'}`)
+    if (styleString) {
+      try {
+        style = JSON.parse(styleString);
+        console.log('📖 saveProject: 从localStorage读取到style:', style);
+      } catch (e) {
+        console.warn('❌ saveProject: 解析style配置失败:', e);
+        style = null;
       }
-    };
+    }
+    
+    // 如果style为null或格式不正确，使用默认的StyleConfig格式
+    if (!style || !style.title || !style.subtitle) {
+      console.warn('⚠️ saveProject: 使用默认style配置');
+      style = {
+        title: {
+          text: "默认标题",
+          fontSize: 24,
+          color: "#ffffff",
+          position: "top"
+        },
+        subtitle: {
+          text: "默认副标题",
+          fontSize: 18,
+          color: "#ffffff",
+          position: "bottom"
+        }
+      };
+    }
+    
+    body.style = style;
+  } else {
+    console.log('✅ saveProject: 使用传入的style配置');
   }
-  
-  body.style = style;
   
   try {
     const pos = config?.style?.subtitle?.position as any
@@ -498,6 +506,10 @@ export const saveProject = async (
   } catch {}
   
   console.log('🚀 saveProject请求体:', body);
+  console.log('🔍 调试信息:');
+  console.log('   templateId:', templateId);
+  console.log('   portraitMode:', body.portraitMode);
+  console.log('   subtitle position:', config?.style?.subtitle?.position);
   
   const response = await api.post<ApiResponse<ProjectConfig>>('/projects', body)
   

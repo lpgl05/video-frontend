@@ -77,8 +77,10 @@ const ParamsPanel: React.FC<ParamsPanelProps> = ({
         subtitle: {
           color: '#ffffff',
           position: 'template1',
-          fontSize: 60,
+          fontSize: 18,  // ✅ 修复：横版模板字幕字体大小调整为18px
           fontFamily: 'SourceHanSansCN-Heavy',
+          strokeWidth: 0,
+          shadow: 0,  // ✅ 新增：字幕阴影设置，默认值为0
           background: {
             background_color: '#FFFFFF',
             background_opacity: 0
@@ -93,16 +95,18 @@ const ParamsPanel: React.FC<ParamsPanelProps> = ({
           alignment: 'center',
           spacing: 11,
           mainTitle: {
-            text: '',
-            fontSize: 80,
+            text: '人工智能风潮正劲',
+            fontSize: 120,
             color: '#ffffff',
-            fontFamily: 'SourceHanSansCN-Heavy'
+            fontFamily: 'SourceHanSansCN-Heavy',
+            strokeWidth: 0
           },
           subTitle: {
-            text: '',
-            fontSize: 80,
+            text: '企业如何乘风破浪',
+            fontSize: 120,
             color: '#ffff00',
-            fontFamily: 'SourceHanSansCN-Heavy'
+            fontFamily: 'SourceHanSansCN-Heavy',
+            strokeWidth: 0
           },
           background: {
             background_color: '#CEC970',
@@ -112,8 +116,10 @@ const ParamsPanel: React.FC<ParamsPanelProps> = ({
         subtitle: {
           color: '#ffffff',
           position: 'template2' as 'template1', // 类型兼容处理
-          fontSize: 80,
+          fontSize: 18,
           fontFamily: 'SourceHanSansCN-Heavy',
+          strokeWidth: 0,
+          shadow: 0,
           background: {
             background_color: '#FFFFFF',
             background_opacity: 0
@@ -735,7 +741,7 @@ const ParamsPanel: React.FC<ParamsPanelProps> = ({
               <Select.Option value="center">中间</Select.Option>
               <Select.Option value="bottom">底部</Select.Option>
               <Select.Option value="template1">模板位置1（横屏视频）</Select.Option>
-              <Select.Option value="template2">默认模板2（竖屏视频）</Select.Option>
+              <Select.Option value="template2">竖屏默认（上边距1372px）</Select.Option>
             </Select>
           </Col>
         </Row>
@@ -785,10 +791,26 @@ const ParamsPanel: React.FC<ParamsPanelProps> = ({
             <InputNumber
               min={0}
               max={10}
-              value={subtitleConfig.strokeWidth || 1}
+              value={subtitleConfig.strokeWidth !== undefined ? subtitleConfig.strokeWidth : 0}
               onChange={(strokeWidth) => updateStyle({ ...currentStyle, subtitle: { ...subtitleConfig, strokeWidth: strokeWidth || 0, fontSize: subtitleConfig.fontSize, color: subtitleConfig.color } })}
               style={{ width: '100%', height: '32px', lineHeight: '30px' }}
               addonAfter="px"
+            />
+          </Col>
+        </Row>
+
+        {/* 第四行：阴影设置 */}
+        <Row gutter={12} style={{ marginTop: 8 }}>
+          <Col span={12}>
+            <label style={{ display: 'block', marginBottom: 4, fontSize: '12px' }}>字幕阴影深度</label>
+            <InputNumber
+              min={0}
+              max={10}
+              value={subtitleConfig.shadow !== undefined ? subtitleConfig.shadow : 0}
+              onChange={(shadow) => updateStyle({ ...currentStyle, subtitle: { ...subtitleConfig, shadow: shadow || 0, fontSize: subtitleConfig.fontSize, color: subtitleConfig.color } })}
+              style={{ width: '100%', height: '32px', lineHeight: '30px' }}
+              addonAfter="px"
+              placeholder="0=无阴影"
             />
           </Col>
         </Row>

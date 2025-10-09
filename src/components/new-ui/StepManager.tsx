@@ -244,8 +244,24 @@ const StepManager: React.FC<StepManagerProps> = ({
         return;
       }
 
-      let style = localStorage.getItem(`videoConfig_${selectedTemplate.id}`)
-      style = JSON.parse(style);
+      // 获取样式配置
+      let styleString = localStorage.getItem(`videoConfig_${selectedTemplate.id}`);
+      console.log('🎨 从localStorage读取样式配置:', styleString);
+      
+      let style = styleConfig; // 使用当前的styleConfig作为默认值
+      if (styleString) {
+        try {
+          const parsedConfig = JSON.parse(styleString);
+          // localStorage中保存的可能是 {params: {...}, style: {...}} 的结构
+          style = parsedConfig.style || parsedConfig;
+          console.log('✅ 解析后的样式配置:', style);
+        } catch (e) {
+          console.error('❌ 解析样式配置失败:', e);
+        }
+      } else {
+        console.warn('⚠️ 未找到样式配置，使用当前styleConfig');
+      }
+      
       // 构建符合ClipRequest接口的数据结构
       const project = {
         name: projectName,
@@ -260,11 +276,11 @@ const StepManager: React.FC<StepManagerProps> = ({
         playbackSpeed: playbackSpeed.toString(), // 倍速
         videoCount: generateCount,
         voice: voiceType || 'female', // 使用传递的voiceType参数
-        // style: styleConfig,
-        style: style
+        style: style  // 使用解析后的样式配置
       };
       
       console.log('🎙️ StepManager生成项目配置:', { voiceType, voice: voiceType || 'female', voiceSpeed: templateParams?.voiceSpeed });
+      console.log('🎨 项目配置的完整style:', JSON.stringify(project.style, null, 2));
       
       const savedProject = await saveProject(project, voiceType, templateParams?.voiceSpeed, templateParams, selectedTemplate?.id);
       console.log('✅ 项目配置已保存:', savedProject);

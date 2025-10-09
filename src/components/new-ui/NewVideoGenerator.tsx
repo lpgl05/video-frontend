@@ -189,8 +189,10 @@ const NewVideoGenerator: React.FC = () => {
       subtitle: {
         color: '#ffffff',
         position: 'template1',
-        fontSize: 60,
+        fontSize: 18,  // ✅ 修复：横版模板字幕字体大小调整为18px
         fontFamily: 'SourceHanSansCN-Heavy',
+        strokeWidth: 0,
+        shadow: 0,  // ✅ 新增：字幕阴影设置，默认值为0
         background: {
           background_color: '#FFFFFF',
           background_opacity: 0
@@ -219,16 +221,18 @@ const NewVideoGenerator: React.FC = () => {
         alignment: 'center',
         spacing: 11,
         mainTitle: {
-          text: '',
-          fontSize: 80,
+          text: '人工智能风潮正劲',
+          fontSize: 120,
           color: '#ffffff',
-          fontFamily: 'SourceHanSansCN-Heavy'
+          fontFamily: 'SourceHanSansCN-Heavy',
+          strokeWidth: 0
         },
         subTitle: {
-          text: '',
-          fontSize: 80,
+          text: '企业如何乘风破浪',
+          fontSize: 120,
           color: '#ffff00',
-          fontFamily: 'SourceHanSansCN-Heavy'
+          fontFamily: 'SourceHanSansCN-Heavy',
+          strokeWidth: 0
         },
         background: {
           background_color: '#CEC970',
@@ -238,8 +242,10 @@ const NewVideoGenerator: React.FC = () => {
       subtitle: {
         color: '#ffffff',
         position: 'template2' as 'template1', // 类型兼容处理
-        fontSize: 80,
+        fontSize: 18,
         fontFamily: 'SourceHanSansCN-Heavy',
+        strokeWidth: 0,
+        shadow: 0,
         background: {
           background_color: '#FFFFFF',
           background_opacity: 0
