@@ -455,7 +455,7 @@ export const saveProject = async (
   if (templateId) {
     body.templateId = templateId;
     // 统一设置为true，确保横版和竖版都输出9:16格式
-    body.portraitMode = true;
+    body.portraitMode = templateId === 'template1' ? false : true;
     console.log('🎯 saveProject: 设置模板ID:', templateId, 'portraitMode:', body.portraitMode);
   }
   
