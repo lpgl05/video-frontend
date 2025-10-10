@@ -116,7 +116,7 @@ const ParamsPanel: React.FC<ParamsPanelProps> = ({
         subtitle: {
           color: '#ffffff',
           position: 'template2' as 'template1', // 类型兼容处理
-          fontSize: 18,
+          fontSize: 12,
           fontFamily: 'SourceHanSansCN-Heavy',
           strokeWidth: 0,
           shadow: 0,
