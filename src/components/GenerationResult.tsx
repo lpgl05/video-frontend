@@ -106,29 +106,58 @@ const GenerationResult: React.FC<GenerationResultProps> = ({ task, onReset, onNe
   }
 
   // 批量下载所有视频
-  const handleBatchDownload = () => {
-    if (!task?.result?.videos || task.result.videos.length === 0) {
-      message.warning('没有可下载的视频');
-      return;
+  const handleBatchDownload = async () => {
+    const projectId = (task as any)?.projectId || (task as any)?.project?.id
+    if (!projectId) {
+      message.error('找不到 projectId，无法下载')
+      return
     }
 
-    task.result.videos.forEach((video, index) => {
-      setTimeout(() => {
-        if (video.url) {
-          const link = document.createElement('a');
-          const downloadUrl = video.url.includes('oss-proxy') ? 
-            video.url.replace(':8000', ':9999') + '&download=true' : 
-            video.url;
-          link.href = downloadUrl;
-          link.download = `${projectName ? `${projectName}_${String(index + 1).padStart(2, '0')}` : `混剪视频_${index + 1}`}.mp4`;
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-        }
-      }, index * 500);
-    });
+    const videos = task?.result?.videos || []
+    const videoUrls = videos.map(v => v.url).filter(Boolean) as string[]
+    if (videoUrls.length === 0) {
+      message.warning('没有可下载的视频')
+      return
+    }
 
-    message.success(`开始批量下载 ${task.result.videos.length} 个视频文件`);
+    const hide = message.loading('请求打包中，请稍候...', 0)
+    try {
+      // 注意：后端接口路径请与后端保持一致；此处使用相对路径 /projects/:projectId/package-zip
+      const resp = await fetch(`/api/videos/batch-download`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          videoUrls,
+          fileName: `${projectName || 'videos'}.zip`,
+          // 可选：把 voice/templateParams 等透传给后端
+          voice: (task as any)?.voice || undefined
+        })
+      })
+
+      if (!resp.ok) {
+        throw new Error(`打包请求失败，状态码 ${resp.status}`)
+      }
+
+      const blob = await resp.blob()
+      hide()
+
+      const blobUrl = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = blobUrl
+      a.download = `${projectName || 'videos'}.zip`
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      URL.revokeObjectURL(blobUrl)
+
+      message.success('打包完成，下载已开始')
+    } catch (err) {
+      hide()
+      console.error('批量打包/下载失败', err)
+      message.error('请求打包或下载失败，请稍后重试')
+    }
   };
 
   const handleShare = (url: string, index: number) => {
