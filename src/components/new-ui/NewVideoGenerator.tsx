@@ -189,7 +189,7 @@ const NewVideoGenerator: React.FC = () => {
       subtitle: {
         color: '#ffffff',
         position: 'template1',
-        fontSize: 18,  // ✅ 修复：横版模板字幕字体大小调整为18px
+        fontSize: 12,  // ✅ 修复：横版模板字幕字体大小调整为18px
         fontFamily: 'SourceHanSansCN-Heavy',
         strokeWidth: 0,
         shadow: 0,  // ✅ 新增：字幕阴影设置，默认值为0
